@@ -1,0 +1,277 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Black Celluloid theme - cinematic palette */
+  --noir: #0a0906;
+  --noir-soft: #111009;
+  --creme: #f0e8d5;
+  --creme-dark: #c8bfa8;
+  --or: #b8914a;
+  --or-pale: #d4a853;
+  --rouge: #6b1a1a;
+  --rouge-vif: #8b2020;
+  --gris: #2a2620;
+  --gris-mid: #3d3830;
+  --text-muted: #7a7060;
+  
+  --background: #0a0906;
+  --foreground: #f0e8d5;
+  --card: #111009;
+  --card-foreground: #f0e8d5;
+  --popover: #0a0906;
+  --popover-foreground: #f0e8d5;
+  --primary: #f0e8d5;
+  --primary-foreground: #0a0906;
+  --secondary: #2a2620;
+  --secondary-foreground: #f0e8d5;
+  --muted: #2a2620;
+  --muted-foreground: #7a7060;
+  --accent: #b8914a;
+  --accent-foreground: #0a0906;
+  --destructive: #6b1a1a;
+  --destructive-foreground: #f0e8d5;
+  --border: #3d3830;
+  --input: #2a2620;
+  --ring: #b8914a;
+  --radius: 0.25rem;
+}
+
+@theme inline {
+  --font-sans: var(--font-sans), 'Syne', system-ui, sans-serif;
+  --font-serif: var(--font-serif), 'Playfair Display', Georgia, serif;
+  --font-mono: var(--font-mono), 'DM Mono', 'Geist Mono', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    background: var(--noir);
+    color: var(--creme);
+    font-family: 'Syne', var(--font-sans), sans-serif;
+    overflow-x: hidden;
+  }
+  
+  /* Grain overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 9997;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--noir);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--gris-mid);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--or);
+  }
+  
+  /* Selection */
+  ::selection {
+    background: rgba(184, 145, 74, 0.4);
+    color: var(--creme);
+  }
+}
+
+/* Typography utilities */
+.font-display {
+  font-family: 'Playfair Display', var(--font-serif), serif;
+}
+
+.font-mono-custom {
+  font-family: 'DM Mono', var(--font-mono), monospace;
+}
+
+/* Color utilities */
+.text-or { color: var(--or); }
+.text-creme { color: var(--creme); }
+.text-creme-dark { color: var(--creme-dark); }
+.text-muted-custom { color: var(--text-muted); }
+.bg-noir { background: var(--noir); }
+.bg-noir-soft { background: var(--noir-soft); }
+.bg-gris { background: var(--gris); }
+.bg-gris-mid { background: var(--gris-mid); }
+.border-gris-mid { border-color: var(--gris-mid); }
+.border-or { border-color: var(--or); }
+
+/* Film strip pattern */
+.film-strip {
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--gris) 0px, var(--gris) 8px,
+    transparent 8px, transparent 22px,
+    var(--gris) 22px, var(--gris) 30px
+  );
+  opacity: 0.4;
+}
+
+/* Scroll pulse animation */
+@keyframes scrollPulse {
+  0%, 100% { transform: scaleY(1); opacity: 1; }
+  50% { transform: scaleY(0.6); opacity: 0.4; }
+}
+
+.animate-scroll-pulse {
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease forwards;
+}
+
+/* Stat number styling */
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--or);
+  line-height: 1;
+}
+
+/* Section label styling */
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: var(--or);
+  text-transform: uppercase;
+}
+
+/* Portrait frame */
+.portrait-frame {
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(184, 145, 74, 0.2);
+}
+
+.portrait-frame::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: var(--or);
+  opacity: 0.4;
+}
+
+.portrait-frame::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: var(--or);
+  opacity: 0.4;
+}
+
+/* Portrait lines overlay */
+.portrait-lines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(184, 145, 74, 0.03) 3px,
+    rgba(184, 145, 74, 0.03) 4px
+  );
+}
+
+/* Corner decorations */
+.portrait-corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: var(--or);
+  border-style: solid;
+  opacity: 0.4;
+}
+
+.portrait-corner.tl { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
+.portrait-corner.tr { top: 12px; right: 12px; border-width: 1px 1px 0 0; }
+.portrait-corner.bl { bottom: 12px; left: 12px; border-width: 0 0 1px 1px; }
+.portrait-corner.br { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
+
+/* Horizontal bar chart */
+.hbar-track {
+  height: 6px;
+  background: var(--gris-mid);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.hbar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dot animation */
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+/* Image grayscale effect */
+.img-grayscale {
+  filter: grayscale(100%) contrast(1.2);
+  transition: filter 0.4s ease;
+}
+
+.img-grayscale:hover {
+  filter: grayscale(30%) contrast(1.1);
+}
