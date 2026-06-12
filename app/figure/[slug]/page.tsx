@@ -8,6 +8,7 @@ import { GaboureySidibePage } from "@/components/figures/gabourey-page"
 import { LupitaPage } from "@/components/figures/lupita-page"
 import { HalleBaileyPage } from "@/components/figures/halle-bailey-page"
 import { CustomCursor } from "@/components/custom-cursor"
+import { ScrollToTop } from "@/components/scroll-to-top"
 
 const figureComponents: Record<string, React.ComponentType> = {
   "hattie-mcdaniel": HattiePage,
@@ -63,6 +64,7 @@ export default async function FigureRoute({ params }: Props) {
 
   return (
     <>
+      <ScrollToTop />
       <CustomCursor />
       <FigureComponent />
     </>

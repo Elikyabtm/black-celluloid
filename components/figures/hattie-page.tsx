@@ -8,27 +8,43 @@ import Link from "next/link"
 
 gsap.registerPlugin(ScrollTrigger)
 
-// ─── SVG HEAD ──────────────────────────────────────────────────
-function HeadSVG({ color, highlight, size = 24 }: {
-  color: string; highlight: boolean; size?: number
-}) {
-  return (
-    <svg width={size} height={size + 6} viewBox="0 0 32 38" fill="none">
-      {highlight && <rect width="32" height="38" fill="rgba(184,145,74,0.09)" />}
-      <rect x="13" y="26" width="6" height="8" rx="1" fill={color} opacity="0.85" />
-      <ellipse cx="16" cy="17" rx="11" ry="12" fill={color} />
-      <ellipse cx="16" cy="7" rx="10" ry="4.5" fill={color} opacity="0.65" />
-      <ellipse cx="12" cy="16" rx="1.8" ry="1.4" fill="rgba(255,255,255,0.65)" />
-      <ellipse cx="20" cy="16" rx="1.8" ry="1.4" fill="rgba(255,255,255,0.65)" />
-      <circle cx="12.5" cy="16" r="0.9" fill="#1a1208" />
-      <circle cx="20.5" cy="16" r="0.9" fill="#1a1208" />
-      <path d="M13 21 Q16 23.5 19 21" stroke="rgba(255,255,255,0.3)" strokeWidth="0.8" fill="none" />
-      {highlight && <rect x="11" y="30" width="10" height="5" rx="1" fill="rgba(240,232,213,0.18)" />}
-    </svg>
-  )
+// ─── PHOTO HEAD ────────────────────────────────────────────────
+// Miniature photo réelle à la place des SVG
+const ROLE_FILTERS: Record<string, string> = {
+  maid:   "grayscale(100%) contrast(1.2) brightness(0.55)",
+  comic:  "grayscale(100%) sepia(0.5) contrast(1.1) brightness(0.65)",
+  nurse:  "grayscale(100%) contrast(1.1) brightness(0.45)",
+  other:  "grayscale(100%) brightness(0.3)",
+}
+const ROLE_IMAGES: Record<string, string> = {
+  maid:  "/images/gonewiththewind.jpg",
+  comic: "/images/judgepriest.jpg",
+  nurse: "/images/aliceadams.jpg",
+  other: "/images/showboat.jpg",
 }
 
-const HEAD_COLORS = ["#6b4c3b","#7a5c4a","#5c3d2e","#8a6b52","#4a2e1e","#9a7a62","#3d2414"]
+function PhotoHead({ role, size = 24 }: { role: "maid"|"comic"|"nurse"|"other"; size?: number }) {
+  return (
+    <div style={{
+      width: size, height: size,
+      position: "relative", overflow: "hidden",
+      flexShrink: 0,
+      outline: role === "maid" ? "1px solid rgba(184,145,74,0.12)" : "none",
+    }}>
+      <Image
+        src={ROLE_IMAGES[role]}
+        alt=""
+        fill
+        sizes={`${size}px`}
+        style={{
+          objectFit: "cover",
+          objectPosition: "50% 15%",
+          filter: ROLE_FILTERS[role],
+        }}
+      />
+    </div>
+  )
+}
 const ROLES: ("maid"|"comic"|"nurse"|"other")[] = [
   ...Array(269).fill("maid"),
   ...Array(25).fill("comic"),
@@ -108,38 +124,44 @@ function InlineQuote({ text, author, accentColor = "#b8914a" }: {
 }
 
 // ─── PHOTOGRAMME ───────────────────────────────────────────────
-function Photogram({ title, year, role }: { title: string; year: string; role: string }) {
+function Photogram({ src, title, year, role }: {
+  src: string; title: string; year: string; role: string
+}) {
   return (
     <div style={{
       position: "relative", aspectRatio: "4/3", overflow: "hidden",
       background: "#080604", border: "1px solid #1a1710",
     }}>
-      <Image src="/images/hattie-mcdaniel.jpg" alt={title} fill
-        style={{ objectFit: "cover", objectPosition: "top",
-          filter: "grayscale(100%) contrast(1.3) brightness(0.4)" }} />
-      <div style={{ position: "absolute", inset: 0,
+      <Image src={src} alt={title} fill
+        style={{ objectFit: "cover", objectPosition: "center",
+          filter: "grayscale(100%) contrast(1.25) brightness(0.55)" }} />
+      {/* Grain */}
+      <div style={{
+        position: "absolute", inset: 0,
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-        opacity: 0.12, mixBlendMode: "overlay", pointerEvents: "none" }} />
+        opacity: 0.1, mixBlendMode: "overlay", pointerEvents: "none",
+      }} />
       <div style={{ position: "absolute", inset: 0,
-        background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.75) 100%)" }} />
+        background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%)" }} />
       {/* Bandes pellicule */}
       <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 10,
         background: "repeating-linear-gradient(to right,#0a0806 0,#0a0806 14px,transparent 14px,transparent 22px)" }} />
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 10,
         background: "repeating-linear-gradient(to right,#0a0806 0,#0a0806 14px,transparent 14px,transparent 22px)" }} />
+      {/* Label */}
       <div style={{ position: "absolute", bottom: 14, left: 0, right: 0,
-        padding: "0 1.2rem", display: "flex", justifyContent: "space-between",
-        alignItems: "flex-end" }}>
+        padding: "0 1.2rem", display: "flex",
+        justifyContent: "space-between", alignItems: "flex-end" }}>
         <div>
           <p style={{ fontFamily: "Playfair Display, serif", fontStyle: "italic",
-            fontSize: "clamp(0.85rem,1.3vw,1rem)", color: "rgba(240,232,213,0.6)",
-            lineHeight: 1.2 }}>{title}</p>
+            fontSize: "clamp(0.85rem,1.3vw,1rem)",
+            color: "rgba(240,232,213,0.7)", lineHeight: 1.2 }}>{title}</p>
           <p style={{ fontFamily: "DM Mono, monospace", fontSize: 8,
-            color: "rgba(122,112,96,0.5)", letterSpacing: "0.15em",
+            color: "rgba(122,112,96,0.6)", letterSpacing: "0.15em",
             marginTop: "0.2rem", textTransform: "uppercase" }}>{role}</p>
         </div>
         <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-          color: "rgba(122,112,96,0.4)", letterSpacing: "0.1em" }}>{year}</p>
+          color: "rgba(122,112,96,0.45)", letterSpacing: "0.1em" }}>{year}</p>
       </div>
     </div>
   )
@@ -325,9 +347,9 @@ export function HattiePage() {
         )
       })
 
-      // Compteur 309
+      // Compteur 309 — refresh après montage pour recalculer les positions
       ScrollTrigger.create({
-        trigger: ".count-trigger", start: "top 72%",
+        trigger: ".count-trigger", start: "top 80%",
         onEnter: () => {
           let c = 0
           const iv = setInterval(() => {
@@ -336,6 +358,10 @@ export function HattiePage() {
           }, 16)
         }
       })
+
+      // Refresh après un court délai pour recalculer toutes les positions
+      // (nécessaire à cause du pin de OscarTimeline)
+      setTimeout(() => ScrollTrigger.refresh(), 300)
 
       // Grille
       ScrollTrigger.create({
@@ -371,12 +397,12 @@ export function HattiePage() {
       gsap.fromTo(".exit-left",
         { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 1,
-          scrollTrigger: { trigger: ".exit-left", start: "top 75%" } }
+          scrollTrigger: { trigger: ".exit-left", start: "top 90%" } }
       )
       gsap.fromTo(".exit-right",
         { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 1, delay: 0.2,
-          scrollTrigger: { trigger: ".exit-right", start: "top 75%" } }
+          scrollTrigger: { trigger: ".exit-right", start: "top 90%" } }
       )
 
     }, container)
@@ -479,11 +505,14 @@ export function HattiePage() {
         </div>
 
         {/* Texte + grand nombre */}
-        <p className="data-reveal count-trigger" style={{ fontFamily: "Playfair Display, serif",
+        <p className="data-reveal" style={{ fontFamily: "Playfair Display, serif",
           fontSize: "clamp(1.1rem,1.9vw,1.45rem)", lineHeight: 1.9,
           color: "#c8bfa8", marginBottom: "0" }}>
           Dans ce cadre, Hattie McDaniel a tourné dans
         </p>
+
+        {/* Trigger séparé pour le compteur */}
+        <div className="count-trigger" style={{ height: 1, marginBottom: 0 }} />
 
         {/* 309 — énorme, déborde vers la droite */}
         <div style={{ margin: "0 0 2vh", lineHeight: 0.85 }}>
@@ -520,58 +549,73 @@ export function HattiePage() {
           textTransform: "uppercase", marginBottom: "1rem" }}>
           309 films · chaque visage est un rôle
         </p>
-        <div style={{ display: "flex", gap: "2.5rem", marginBottom: "1.8rem",
-          flexWrap: "wrap" }}>
+        {/* Légende avec images réelles */}
+        <div style={{ display: "flex", gap: "2rem", marginBottom: "1.8rem", flexWrap: "wrap" }}>
           {[
-            { color: "#7a7060", label: "Domestique / Mammy — 87%" },
-            { color: "#b8914a", label: "Comic Relief — 8%" },
-            { color: "#6b4c3b", label: "Nourrice — 3%" },
-            { color: "#3d3830", label: "Autre — 2%" },
+            { src: "/images/hattie-mcdaniel.jpg", label: "Domestique / Mammy", pct: "87%" },
+            { src: "/images/hattie-mcdaniel.jpg", label: "Comic Relief", pct: "8%" },
+            { src: "/images/hattie-mcdaniel.jpg", label: "Nourrice", pct: "3%" },
+            { src: "/images/hattie-mcdaniel.jpg", label: "Autre", pct: "2%" },
           ].map((l, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 7,
-              fontFamily: "DM Mono, monospace", fontSize: 9, color: "#c8bfa8" }}>
-              <div style={{ width: 9, height: 9, background: l.color,
-                borderRadius: 2, flexShrink: 0 }} />
-              {l.label}
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{
+                width: 36, height: 36, position: "relative",
+                flexShrink: 0, overflow: "hidden",
+                border: "1px solid #2a2620",
+              }}>
+                <Image src={l.src} alt={l.label} fill
+                  style={{ objectFit: "cover", objectPosition: "top center",
+                    filter: [
+                      "grayscale(100%) contrast(1.2) brightness(0.55)",         // domestique
+                      "grayscale(100%) sepia(0.4) contrast(1.1) brightness(0.6)", // comic
+                      "grayscale(100%) contrast(1.1) brightness(0.45)",           // nourrice
+                      "grayscale(100%) brightness(0.35)",                         // autre
+                    ][i]
+                  }} />
+              </div>
+              <div>
+                <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+                  color: "#c8bfa8", letterSpacing: "0.05em", lineHeight: 1.2 }}>
+                  {l.label}
+                </p>
+                <p style={{ fontFamily: "DM Mono, monospace", fontSize: 8,
+                  color: "#7a7060", letterSpacing: "0.1em" }}>
+                  {l.pct}
+                </p>
+              </div>
             </div>
           ))}
         </div>
 
         {/* Grille pleine largeur */}
-        <div className="heads-trigger" style={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
-          {ROLES.map((role, i) => {
-            const col = role === "maid" ? HEAD_COLORS[i % HEAD_COLORS.length]
-              : role === "comic" ? "#8a7a52"
-              : role === "nurse" ? "#5c3d2e"
-              : "#3a3530"
-            return (
-              <div key={i}
-                onMouseEnter={() => setActiveHead(i)}
-                onMouseLeave={() => setActiveHead(null)}
-                style={{
-                  opacity: headsVisible ? 1 : 0,
-                  transform: headsVisible ? "scale(1)" : "scale(0.6)",
-                  transition: `opacity 0.35s ${(i * 5) % 700}ms, transform 0.35s ${(i * 5) % 700}ms`,
-                  position: "relative", cursor: "default",
+        <div className="heads-trigger" style={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+          {ROLES.map((role, i) => (
+            <div key={i}
+              onMouseEnter={() => setActiveHead(i)}
+              onMouseLeave={() => setActiveHead(null)}
+              style={{
+                opacity: headsVisible ? 1 : 0,
+                transform: headsVisible ? "scale(1)" : "scale(0.7)",
+                transition: `opacity 0.35s ${(i * 4) % 600}ms, transform 0.35s ${(i * 4) % 600}ms`,
+                position: "relative", cursor: "default",
+              }}>
+              <PhotoHead role={role} size={26} />
+              {activeHead === i && (
+                <div style={{
+                  position: "absolute", bottom: "calc(100% + 4px)", left: "50%",
+                  transform: "translateX(-50%)", background: "#0e0c09",
+                  border: "1px solid #3d3830", padding: "3px 7px",
+                  whiteSpace: "nowrap", fontFamily: "DM Mono, monospace",
+                  fontSize: 8, color: "#c8bfa8", letterSpacing: "0.1em",
+                  zIndex: 10, pointerEvents: "none",
                 }}>
-                <HeadSVG color={col} highlight={role === "maid"} size={24} />
-                {activeHead === i && (
-                  <div style={{
-                    position: "absolute", bottom: "calc(100% + 4px)", left: "50%",
-                    transform: "translateX(-50%)", background: "#0e0c09",
-                    border: "1px solid #3d3830", padding: "3px 7px",
-                    whiteSpace: "nowrap", fontFamily: "DM Mono, monospace",
-                    fontSize: 8, color: "#c8bfa8", letterSpacing: "0.1em",
-                    zIndex: 10, pointerEvents: "none",
-                  }}>
-                    {role === "maid" ? "Domestique"
-                      : role === "comic" ? "Comic relief"
-                      : role === "nurse" ? "Nourrice" : "Autre"}
-                  </div>
-                )}
-              </div>
-            )
-          })}
+                  {role === "maid" ? "Domestique"
+                    : role === "comic" ? "Comic relief"
+                    : role === "nurse" ? "Nourrice" : "Autre"}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
         <p style={{ fontFamily: "DM Mono, monospace", fontSize: 10,
           color: "#7a7060", marginTop: "1.5rem", letterSpacing: "0.1em" }}>
@@ -653,10 +697,10 @@ export function HattiePage() {
               Ce que l'industrie lui proposait
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
-              <Photogram title="Judge Priest" year="1934" role="Dilsey, domestique" />
-              <Photogram title="Alice Adams" year="1935" role="Malena Burns, cuisinière" />
-              <Photogram title="Show Boat" year="1936" role="Queenie, lavandière" />
-              <Photogram title="Gone with the Wind" year="1939" role="Mammy" />
+                <Photogram src="/images/judgepriest.jpg"    title="Judge Priest"        year="1934" role="Dilsey, domestique" />
+                <Photogram src="/images/aliceadams.jpg"     title="Alice Adams"         year="1935" role="Malena Burns, cuisinière" />
+                <Photogram src="/images/showboat.jpg"       title="Show Boat"           year="1936" role="Queenie, lavandière" />
+                <Photogram src="/images/gonewiththewind.jpg" title="Gone with the Wind"  year="1939" role="Mammy" />
             </div>
           </div>
 
@@ -718,7 +762,7 @@ export function HattiePage() {
           <iframe
             style={{ position: "absolute", inset: 0, width: "100%",
               height: "100%", border: "none" }}
-            src="https://www.youtube.com/embed/6P0sA6ZTCAM?rel=0&modestbranding=1&color=white"
+            src="https://www.youtube.com/embed/e7t4pTNZshA?rel=0&modestbranding=1&color=white"
             title="Hattie McDaniel — Academy Award 1940"
             allowFullScreen loading="lazy"
           />
@@ -826,7 +870,7 @@ export function HattiePage() {
       </section>
 
       {/* ── §6 LA SORTIE ─────────────────────────────────────────── */}
-      <section style={{ minHeight: "100vh", position: "relative", overflow: "hidden",
+      <section style={{ minHeight: "100vh", position: "relative",
         display: "flex", flexDirection: "column", justifyContent: "flex-end",
         padding: "0 8vw 12vh" }}>
 
