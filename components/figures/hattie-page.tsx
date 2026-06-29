@@ -8,42 +8,37 @@ import Link from "next/link"
 
 gsap.registerPlugin(ScrollTrigger)
 
-// ─── PHOTO HEAD ────────────────────────────────────────────────
-// Miniature photo réelle à la place des SVG
-const ROLE_FILTERS: Record<string, string> = {
-  maid:   "grayscale(100%) contrast(1.2) brightness(0.55)",
-  comic:  "grayscale(100%) sepia(0.5) contrast(1.1) brightness(0.65)",
-  nurse:  "grayscale(100%) contrast(1.1) brightness(0.45)",
-  other:  "grayscale(100%) brightness(0.3)",
+// ════════════════════════════════════════════════════════════════
+// SYSTÈME DE GRILLE — 12 colonnes réelles, pas de width: 45% au hasard
+// ════════════════════════════════════════════════════════════════
+// Grille explicite — toujours en longhand, jamais de shorthand "padding"
+// mélangé avec paddingTop/paddingBottom (React s'en plaint sinon).
+function gridSection(paddingTop: string, paddingBottom: string): React.CSSProperties {
+  return {
+    display: "grid",
+    gridTemplateColumns: "repeat(12, 1fr)",
+    gap: "1.5rem",
+    paddingLeft: "8vw",
+    paddingRight: "8vw",
+    paddingTop,
+    paddingBottom,
+  }
 }
+const col = (start: number, span: number): React.CSSProperties => ({
+  gridColumn: `${start} / span ${span}`,
+})
+
 const ROLE_IMAGES: Record<string, string> = {
   maid:  "/images/gonewiththewind.jpg",
   comic: "/images/judgepriest.jpg",
   nurse: "/images/aliceadams.jpg",
   other: "/images/showboat.jpg",
 }
-
-function PhotoHead({ role, size = 24 }: { role: "maid"|"comic"|"nurse"|"other"; size?: number }) {
-  return (
-    <div style={{
-      width: size, height: size,
-      position: "relative", overflow: "hidden",
-      flexShrink: 0,
-      outline: role === "maid" ? "1px solid rgba(184,145,74,0.12)" : "none",
-    }}>
-      <Image
-        src={ROLE_IMAGES[role]}
-        alt=""
-        fill
-        sizes={`${size}px`}
-        style={{
-          objectFit: "cover",
-          objectPosition: "50% 15%",
-          filter: ROLE_FILTERS[role],
-        }}
-      />
-    </div>
-  )
+const ROLE_FILTERS: Record<string, string> = {
+  maid:   "grayscale(100%) contrast(1.2) brightness(0.6)",
+  comic:  "grayscale(100%) sepia(0.4) contrast(1.1) brightness(0.65)",
+  nurse:  "grayscale(100%) contrast(1.1) brightness(0.5)",
+  other:  "grayscale(100%) brightness(0.4)",
 }
 const ROLES: ("maid"|"comic"|"nurse"|"other")[] = [
   ...Array(269).fill("maid"),
@@ -52,8 +47,25 @@ const ROLES: ("maid"|"comic"|"nurse"|"other")[] = [
   ...Array(6).fill("other"),
 ]
 
+function PhotoHead({ role, size = 26, onClick }: {
+  role: "maid"|"comic"|"nurse"|"other"; size?: number; onClick?: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        width: size, height: size, position: "relative",
+        overflow: "hidden", flexShrink: 0, border: "none", padding: 0,
+        cursor: "pointer",
+      }}>
+      <Image src={ROLE_IMAGES[role]} alt="" fill sizes={`${size}px`}
+        style={{ objectFit: "cover", objectPosition: "50% 20%", filter: ROLE_FILTERS[role] }} />
+    </button>
+  )
+}
+
 // ─── CITATION VOIX OFF ─────────────────────────────────────────
-function InlineQuote({ text, author, accentColor = "#b8914a" }: {
+function InlineQuote({ text, author, accentColor = "#d4a853" }: {
   text: string; author?: string; accentColor?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -62,17 +74,14 @@ function InlineQuote({ text, author, accentColor = "#b8914a" }: {
 
   useEffect(() => {
     if (!ref.current) return
-    ScrollTrigger.create({
-      trigger: ref.current, start: "top 68%",
-      onEnter: () => setActive(true),
-    })
+    ScrollTrigger.create({ trigger: ref.current, start: "top 75%", onEnter: () => setActive(true) })
   }, [])
 
   const speak = () => {
     if (!("speechSynthesis" in window)) return
     if (playing) { window.speechSynthesis.cancel(); setPlaying(false); return }
     const u = new SpeechSynthesisUtterance(text)
-    u.lang = "fr-FR"; u.rate = 0.82; u.pitch = 1
+    u.lang = "fr-FR"; u.rate = 0.85; u.pitch = 1
     const v = window.speechSynthesis.getVoices().find(v => v.lang.startsWith("fr"))
     if (v) u.voice = v
     u.onend = () => setPlaying(false)
@@ -81,89 +90,74 @@ function InlineQuote({ text, author, accentColor = "#b8914a" }: {
   }
 
   return (
-    <div ref={ref} style={{ position: "relative" }}>
+    <div ref={ref}>
       <button onClick={speak} style={{
-        position: "absolute", top: 0, right: 0,
-        border: `1px solid ${playing ? accentColor : "#3d3830"}`,
-        color: playing ? accentColor : "#7a7060",
-        background: "transparent", cursor: "pointer",
-        fontFamily: "DM Mono, monospace", fontSize: 9,
-        letterSpacing: "0.2em", textTransform: "uppercase",
-        padding: "4px 10px", display: "flex", alignItems: "center", gap: 6,
+        display: "inline-flex", alignItems: "center", gap: 8,
+        border: "none", background: "none", cursor: "pointer",
+        padding: 0, marginBottom: "1rem",
+        color: playing ? accentColor : "#8a8276",
+        fontFamily: "DM Mono, monospace", fontSize: 12,
+        letterSpacing: "0.15em", textTransform: "uppercase",
       }}>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          {playing
-            ? <><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></>
-            : <><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></>
-          }
-        </svg>
-        {playing ? "arrêter" : "écouter"}
+        <span style={{ width: 28, height: 28, borderRadius: "50%",
+          border: `1px solid ${playing ? accentColor : "#4a4540"}`,
+          display: "flex", alignItems: "center", justifyContent: "center" }}>
+          {playing ? "⏸" : "▶"}
+        </span>
+        {playing ? "en lecture" : "écouter la citation"}
       </button>
       <blockquote style={{
         fontFamily: "Playfair Display, serif", fontStyle: "italic",
-        fontSize: "clamp(1.4rem,2.8vw,2.2rem)", lineHeight: 1.55,
-        color: "#f0e8d5", paddingRight: "7rem",
+        fontSize: "clamp(1.5rem,3vw,2.4rem)", lineHeight: 1.5, color: "#f0e8d5",
       }}>
         {text.split(" ").map((word, i) => (
           <span key={i} style={{
-            display: "inline-block", marginRight: "0.28em",
-            opacity: active ? 1 : 0,
-            transform: active ? "translateY(0)" : "translateY(10px)",
-            transition: `opacity 0.45s ${i * 0.05}s, transform 0.45s ${i * 0.05}s`,
+            display: "inline-block", marginRight: "0.3em",
+            opacity: active ? 1 : 0.15,
+            color: active ? "#f0e8d5" : "#3d3830",
+            transition: `opacity 0.5s ${i * 0.04}s, color 0.5s ${i * 0.04}s`,
           }}>{word}</span>
         ))}
       </blockquote>
       {author && (
-        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 10,
-          color: "#7a7060", letterSpacing: "0.2em", marginTop: "1.2rem" }}>
-          — {author}
-        </p>
+        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12,
+          color: "#8a8276", letterSpacing: "0.15em", marginTop: "1.2rem" }}>— {author}</p>
       )}
     </div>
   )
 }
 
 // ─── PHOTOGRAMME ───────────────────────────────────────────────
-function Photogram({ src, title, year, role }: {
+function Photogram({ src, title, year, role, expanded, onToggle }: {
   src: string; title: string; year: string; role: string
+  expanded: boolean; onToggle: () => void
 }) {
   return (
-    <div style={{
-      position: "relative", aspectRatio: "4/3", overflow: "hidden",
-      background: "#080604", border: "1px solid #1a1710",
+    <button onClick={onToggle} style={{
+      position: "relative", aspectRatio: expanded ? "16/10" : "4/3",
+      overflow: "hidden", background: "#0c0a07", border: "1px solid #2a2620",
+      width: "100%", padding: 0, cursor: "pointer",
+      transition: "aspect-ratio 0.5s ease",
     }}>
       <Image src={src} alt={title} fill
-        style={{ objectFit: "cover", objectPosition: "center",
-          filter: "grayscale(100%) contrast(1.25) brightness(0.55)" }} />
-      {/* Grain */}
-      <div style={{
-        position: "absolute", inset: 0,
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-        opacity: 0.1, mixBlendMode: "overlay", pointerEvents: "none",
-      }} />
+        style={{ objectFit: "cover",
+          filter: expanded
+            ? "grayscale(60%) contrast(1.15) brightness(0.85)"
+            : "grayscale(100%) contrast(1.2) brightness(0.55)",
+          transition: "filter 0.5s ease" }} />
       <div style={{ position: "absolute", inset: 0,
-        background: "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.7) 100%)" }} />
-      {/* Bandes pellicule */}
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 10,
-        background: "repeating-linear-gradient(to right,#0a0806 0,#0a0806 14px,transparent 14px,transparent 22px)" }} />
-      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 10,
-        background: "repeating-linear-gradient(to right,#0a0806 0,#0a0806 14px,transparent 14px,transparent 22px)" }} />
-      {/* Label */}
-      <div style={{ position: "absolute", bottom: 14, left: 0, right: 0,
-        padding: "0 1.2rem", display: "flex",
-        justifyContent: "space-between", alignItems: "flex-end" }}>
-        <div>
+        background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 50%)" }} />
+      <div style={{ position: "absolute", bottom: 14, left: 16, right: 16,
+        display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+        <div style={{ textAlign: "left" }}>
           <p style={{ fontFamily: "Playfair Display, serif", fontStyle: "italic",
-            fontSize: "clamp(0.85rem,1.3vw,1rem)",
-            color: "rgba(240,232,213,0.7)", lineHeight: 1.2 }}>{title}</p>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 8,
-            color: "rgba(122,112,96,0.6)", letterSpacing: "0.15em",
-            marginTop: "0.2rem", textTransform: "uppercase" }}>{role}</p>
+            fontSize: "1rem", color: "#f0e8d5" }}>{title}</p>
+          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11,
+            color: "#a89e8e", letterSpacing: "0.1em", marginTop: "0.2rem" }}>{role}</p>
         </div>
-        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-          color: "rgba(122,112,96,0.45)", letterSpacing: "0.1em" }}>{year}</p>
+        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11, color: "#8a8276" }}>{year}</p>
       </div>
-    </div>
+    </button>
   )
 }
 
@@ -172,27 +166,25 @@ function FaitDivers({ date, lieu, source, children }: {
   date: string; lieu: string; source?: string; children: React.ReactNode
 }) {
   return (
-    <div style={{ borderLeft: "2px solid #2a2620", paddingLeft: "2rem" }}>
-      <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-        color: "#b8914a", letterSpacing: "0.3em", textTransform: "uppercase",
-        marginBottom: "0.3rem" }}>{date}</p>
-      <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-        color: "#7a7060", letterSpacing: "0.15em", marginBottom: "1.2rem" }}>{lieu}</p>
+    <div style={{ borderLeft: "3px solid #d4a853", paddingLeft: "1.8rem" }}>
+      <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12,
+        color: "#d4a853", letterSpacing: "0.15em", textTransform: "uppercase",
+        marginBottom: "0.4rem" }}>{date}</p>
+      <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12,
+        color: "#8a8276", marginBottom: "1.2rem" }}>{lieu}</p>
       <div style={{ fontFamily: "Playfair Display, serif",
-        fontSize: "clamp(0.9rem,1.5vw,1.1rem)", lineHeight: 1.85, color: "#c8bfa8" }}>
+        fontSize: "clamp(1rem,1.6vw,1.2rem)", lineHeight: 1.85, color: "#d8cfc0" }}>
         {children}
       </div>
       {source && (
-        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 8,
-          color: "#3d3830", letterSpacing: "0.1em", marginTop: "1rem", lineHeight: 1.6 }}>
-          Source : {source}
-        </p>
+        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11,
+          color: "#5c5448", marginTop: "1rem", lineHeight: 1.6 }}>Source : {source}</p>
       )}
     </div>
   )
 }
 
-// ─── OSCAR TIMELINE HORIZONTALE ────────────────────────────────
+// ─── TIMELINE OSCARS — interactive, cliquable, plus de jeu ──────
 const BEATS = [
   { time: "19:00", text: "L'équipe de Gone with the Wind arrive à l'Ambassador Hotel.",
     sub: "Le film remportera 8 Oscars cette nuit-là.", accent: false, dim: true },
@@ -211,25 +203,32 @@ function OscarTimeline() {
   const inner = useRef<HTMLDivElement>(null)
   const strip = useRef<HTMLDivElement>(null)
   const [active, setActive] = useState(0)
+  const stRef = useRef<ScrollTrigger | null>(null)
 
   useEffect(() => {
     if (!outer.current || !inner.current) return
-    ScrollTrigger.create({
-      trigger: outer.current,
-      start: "top top",
+    stRef.current = ScrollTrigger.create({
+      trigger: outer.current, start: "top top",
       end: () => `+=${(BEATS.length - 1) * window.innerHeight}`,
-      pin: inner.current,
-      scrub: 0.6,
+      pin: inner.current, scrub: 0.6,
       onUpdate: (self) => {
         const idx = Math.min(Math.round(self.progress * (BEATS.length - 1)), BEATS.length - 1)
         setActive(idx)
         if (strip.current) {
-          strip.current.style.transform =
-            `translateX(-${self.progress * (BEATS.length - 1) * 100}vw)`
+          strip.current.style.transform = `translateX(-${self.progress * (BEATS.length - 1) * 100}vw)`
         }
       },
     })
+    return () => { stRef.current?.kill() }
   }, [])
+
+  // Click sur un point = saute directement à ce beat
+  const jumpTo = (i: number) => {
+    if (!stRef.current || !outer.current) return
+    const total = stRef.current.end - stRef.current.start
+    const target = stRef.current.start + (total * i) / (BEATS.length - 1)
+    gsap.to(window, { scrollTo: target, duration: 0.8, ease: "power2.inOut" })
+  }
 
   const beat = BEATS[active]
 
@@ -237,634 +236,421 @@ function OscarTimeline() {
     <div ref={outer} style={{ height: `${BEATS.length * 100}vh`, position: "relative" }}>
       <div ref={inner} style={{
         height: "100vh", overflow: "hidden",
-        background: beat.accent ? "#0e0a04" : beat.dim ? "#040302" : "#060504",
+        background: beat.accent ? "#140d04" : beat.dim ? "#050402" : "#080705",
         transition: "background 0.6s ease",
       }}>
-        {/* Header */}
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 10,
           padding: "2rem 8vw", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9, color: "#b8914a",
-            letterSpacing: "0.45em", textTransform: "uppercase" }}>
-            27 février 1940 · Ambassador Hotel · Los Angeles
+          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12, color: "#d4a853",
+            letterSpacing: "0.25em", textTransform: "uppercase" }}>
+            27 février 1940 · Ambassador Hotel
           </p>
-          <div style={{ display: "flex", gap: 8 }}>
+          {/* Points cliquables — navigation directe */}
+          <div style={{ display: "flex", gap: 10 }}>
             {BEATS.map((_, i) => (
-              <div key={i} style={{
-                width: i === active ? 20 : 6, height: 6, borderRadius: 3,
-                background: i === active ? "#b8914a" : "#2a2620",
+              <button key={i} onClick={() => jumpTo(i)} style={{
+                width: i === active ? 24 : 8, height: 8, borderRadius: 4,
+                background: i === active ? "#d4a853" : "#3a352c",
+                border: "none", padding: 0, cursor: "pointer",
                 transition: "all 0.4s ease",
-              }} />
+              }} aria-label={`Aller au moment ${i + 1}`} />
             ))}
           </div>
         </div>
 
-        {/* Strip */}
-        <div ref={strip} style={{
-          display: "flex", width: `${BEATS.length * 100}vw`,
-          height: "100%", transform: "translateX(0)",
-        }}>
+        <div ref={strip} style={{ display: "flex", width: `${BEATS.length * 100}vw`, height: "100%" }}>
           {BEATS.map((b, i) => (
             <div key={i} style={{
               width: "100vw", height: "100%", flexShrink: 0,
               display: "flex", flexDirection: "column",
-              alignItems: "flex-start", justifyContent: "center",
-              padding: `8vh 8vw`,
+              alignItems: "flex-start", justifyContent: "center", padding: "8vh 8vw",
             }}>
               {b.time && (
-                <p style={{ fontFamily: "DM Mono, monospace",
-                  fontSize: "clamp(0.85rem,1.8vw,1.3rem)",
-                  color: "#7a7060", marginBottom: "3vh", letterSpacing: "0.1em" }}>
-                  {b.time}
-                </p>
+                <p style={{ fontFamily: "DM Mono, monospace", fontSize: "clamp(1rem,2vw,1.4rem)",
+                  color: "#8a8276", marginBottom: "3vh" }}>{b.time}</p>
               )}
               <p style={{
                 fontFamily: "Playfair Display, serif",
                 fontSize: b.accent ? "clamp(2.5rem,6vw,5.5rem)" : "clamp(1.8rem,4vw,3.8rem)",
                 fontWeight: b.accent ? 900 : 400,
                 lineHeight: 1.15, whiteSpace: "pre-line",
-                color: b.accent ? "#f0e8d5" : b.dim ? "#2a2620" : "#c8bfa8",
+                color: b.accent ? "#f0e8d5" : b.dim ? "#6b6358" : "#d8cfc0",
                 maxWidth: b.accent ? "80vw" : "65vw",
-              }}>
-                {b.text}
-              </p>
+              }}>{b.text}</p>
               {b.sub && (
-                <p style={{ fontFamily: "DM Mono, monospace",
-                  fontSize: "clamp(0.75rem,1.2vw,1rem)",
-                  color: "#7a7060", marginTop: "3vh",
-                  maxWidth: "45vw", lineHeight: 1.7, letterSpacing: "0.05em" }}>
-                  {b.sub}
-                </p>
+                <p style={{ fontFamily: "DM Mono, monospace", fontSize: "clamp(0.9rem,1.4vw,1.1rem)",
+                  color: "#8a8276", marginTop: "3vh", maxWidth: "45vw", lineHeight: 1.7 }}>{b.sub}</p>
               )}
-              <p style={{ position: "absolute", bottom: "2rem", right: "8vw",
-                fontFamily: "DM Mono, monospace", fontSize: 9,
-                color: "#2a2620", letterSpacing: "0.2em" }}>
-                {String(i + 1).padStart(2, "0")} / {String(BEATS.length).padStart(2, "0")}
-              </p>
             </div>
           ))}
-        </div>
-
-        <div style={{ position: "absolute", bottom: "2rem", left: "8vw",
-          display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 6,
-          fontFamily: "DM Mono, monospace", fontSize: 8,
-          color: "#2a2620", letterSpacing: "0.3em", textTransform: "uppercase" }}>
-          <div style={{ width: 1, height: 32,
-            background: "linear-gradient(to bottom, transparent, #3d3830)" }} />
-          défiler
         </div>
       </div>
     </div>
   )
 }
 
-// ─── PAGE ───────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════
+// PAGE
+// ════════════════════════════════════════════════════════════════
 export function HattiePage() {
   const container = useRef<HTMLDivElement>(null)
   const [headsVisible, setHeadsVisible] = useState(false)
-  const [activeHead, setActiveHead] = useState<number | null>(null)
   const [counter, setCounter] = useState(0)
+  const [selectedHead, setSelectedHead] = useState<{ role: string; idx: number } | null>(null)
+  const [expandedFilm, setExpandedFilm] = useState<number | null>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      gsap.fromTo(".hero-img", { opacity: 0 }, { opacity: 0.55, duration: 3, delay: 0.3 })
+      gsap.fromTo(".hero-phrase", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 1.2, delay: 0.7 })
 
-      // §1
-      gsap.fromTo(".hero-img",
-        { opacity: 0 },
-        { opacity: 0.5, duration: 3.5, ease: "power2.inOut", delay: 0.3 }
-      )
-      gsap.fromTo(".hero-phrase",
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 1.4, ease: "power3.out", delay: 0.8 }
-      )
-
-      // §2 — reveals
       gsap.utils.toArray<HTMLElement>(".data-reveal").forEach(el => {
-        gsap.fromTo(el,
-          { opacity: 0, y: 16 },
-          { opacity: 1, y: 0, duration: 0.9,
-            scrollTrigger: { trigger: el, start: "top 78%",
-              toggleActions: "play none none reverse" } }
-        )
+        gsap.fromTo(el, { opacity: 0, y: 16 }, {
+          opacity: 1, y: 0, duration: 0.9,
+          scrollTrigger: { trigger: el, start: "top 82%", toggleActions: "play none none reverse" },
+        })
       })
 
-      // Compteur 309 — refresh après montage pour recalculer les positions
       ScrollTrigger.create({
-        trigger: ".count-trigger", start: "top 80%",
+        trigger: ".count-trigger", start: "top 85%",
         onEnter: () => {
           let c = 0
-          const iv = setInterval(() => {
-            c += 6; setCounter(c)
-            if (c >= 309) { setCounter(309); clearInterval(iv) }
-          }, 16)
+          const iv = setInterval(() => { c += 6; setCounter(c); if (c >= 309) { setCounter(309); clearInterval(iv) } }, 16)
         }
       })
+      ScrollTrigger.create({ trigger: ".heads-trigger", start: "top 80%", onEnter: () => setHeadsVisible(true) })
 
-      // Refresh après un court délai pour recalculer toutes les positions
-      // (nécessaire à cause du pin de OscarTimeline)
+      gsap.fromTo(".col-left", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 1, scrollTrigger: { trigger: ".col-left", start: "top 78%" } })
+      gsap.fromTo(".col-right", { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 1, scrollTrigger: { trigger: ".col-right", start: "top 78%" } })
+
+      gsap.fromTo(".friction-zero", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1, scrollTrigger: { trigger: ".friction-zero", start: "top 80%" } })
+      gsap.fromTo(".friction-phrase", { opacity: 0 }, { opacity: 1, duration: 1.3, scrollTrigger: { trigger: ".friction-phrase", start: "top 80%" } })
+
+      gsap.fromTo(".exit-left", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1, scrollTrigger: { trigger: ".exit-left", start: "top 92%" } })
+      gsap.fromTo(".exit-right", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1, delay: 0.15, scrollTrigger: { trigger: ".exit-right", start: "top 92%" } })
+
       setTimeout(() => ScrollTrigger.refresh(), 300)
-
-      // Grille
-      ScrollTrigger.create({
-        trigger: ".heads-trigger", start: "top 68%",
-        onEnter: () => setHeadsVisible(true)
-      })
-
-      // §3 colonnes
-      gsap.fromTo(".col-left",
-        { opacity: 0, x: -20 },
-        { opacity: 1, x: 0, duration: 1,
-          scrollTrigger: { trigger: ".col-left", start: "top 74%" } }
-      )
-      gsap.fromTo(".col-right",
-        { opacity: 0, x: 20 },
-        { opacity: 1, x: 0, duration: 1,
-          scrollTrigger: { trigger: ".col-right", start: "top 74%" } }
-      )
-
-      // §5
-      gsap.fromTo(".friction-zero",
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 1.2, ease: "power3.out",
-          scrollTrigger: { trigger: ".friction-zero", start: "top 74%" } }
-      )
-      gsap.fromTo(".friction-phrase",
-        { opacity: 0 },
-        { opacity: 1, duration: 1.5,
-          scrollTrigger: { trigger: ".friction-phrase", start: "top 74%" } }
-      )
-
-      // §6
-      gsap.fromTo(".exit-left",
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 1,
-          scrollTrigger: { trigger: ".exit-left", start: "top 90%" } }
-      )
-      gsap.fromTo(".exit-right",
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 1, delay: 0.2,
-          scrollTrigger: { trigger: ".exit-right", start: "top 90%" } }
-      )
-
     }, container)
     return () => ctx.revert()
   }, [])
 
+  const roleLabel = (r: string) =>
+    r === "maid" ? "Domestique" : r === "comic" ? "Comic relief" : r === "nurse" ? "Nourrice" : "Autre"
+  const roleFilm = (r: string) =>
+    r === "maid" ? "Gone with the Wind, 1939" : r === "comic" ? "Judge Priest, 1934"
+    : r === "nurse" ? "Alice Adams, 1935" : "Show Boat, 1936"
+
   return (
-    <div ref={container} style={{ background: "#0a0806", color: "#f0e8d5",
-      fontFamily: "Syne, sans-serif" }}>
+    <div ref={container} style={{ background: "#0a0806", color: "#d8cfc0", fontFamily: "Syne, sans-serif" }}>
 
       {/* ── §1 ENTRÉE ────────────────────────────────────────────── */}
-      <section style={{ height: "100vh", position: "relative", overflow: "hidden" }}>
-
-        {/* Image pleine largeur */}
+      <section style={{ height: "100vh", position: "relative" }}>
         <div className="hero-img" style={{ position: "absolute", inset: 0, opacity: 0 }}>
-          <Image src="/images/hattie-mcdaniel.jpg" alt="Hattie McDaniel, Gone with the Wind, 1939"
-            fill style={{ objectFit: "cover", objectPosition: "50% 20%",
-              filter: "grayscale(100%) contrast(1.4) brightness(0.55)" }} />
+          <Image src="/images/hattie-mcdaniel.jpg" alt="Hattie McDaniel, Gone with the Wind, 1939" fill
+            style={{ objectFit: "cover", objectPosition: "50% 20%",
+              filter: "grayscale(100%) contrast(1.35) brightness(0.6)" }} />
           <div style={{ position: "absolute", inset: 0,
-            background: "radial-gradient(ellipse at 30% 50%, rgba(10,9,6,0.1) 0%, rgba(10,9,6,0.8) 75%)" }} />
+            background: "linear-gradient(to right, rgba(10,9,6,0.15) 0%, rgba(10,9,6,0.75) 70%)" }} />
           <div style={{ position: "absolute", inset: 0,
-            background: "linear-gradient(to top, #0a0806 12%, transparent 55%)" }} />
-          {/* Grain */}
-          <div style={{ position: "absolute", inset: 0, opacity: 0.1, pointerEvents: "none",
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
+            background: "linear-gradient(to top, #0a0806 10%, transparent 50%)" }} />
         </div>
 
-        {/* Numéro de figure — haut gauche */}
         <p style={{ position: "absolute", top: "2.5rem", left: "8vw", zIndex: 3,
-          fontFamily: "DM Mono, monospace", fontSize: 9,
-          color: "rgba(184,145,74,0.5)", letterSpacing: "0.45em",
-          textTransform: "uppercase" }}>
+          fontFamily: "DM Mono, monospace", fontSize: 12, color: "#a8895a",
+          letterSpacing: "0.3em", textTransform: "uppercase" }}>
           Figure I · 1895–1952
         </p>
 
-        {/* Texte ancré bas gauche */}
-        <div className="hero-phrase" style={{ position: "absolute", bottom: "12vh",
-          left: "8vw", zIndex: 3, width: "55%", opacity: 0 }}>
-          <h1 style={{ fontFamily: "Playfair Display, serif",
-            fontSize: "clamp(2.2rem,5vw,4.8rem)", fontWeight: 900,
-            lineHeight: 1.1, color: "#f0e8d5", margin: 0 }}>
+        <div className="hero-phrase" style={{ position: "absolute", bottom: "12vh", left: "8vw",
+          zIndex: 3, width: "min(640px, 60%)", opacity: 0 }}>
+          <h1 style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(2.4rem,5vw,4.6rem)",
+            fontWeight: 900, lineHeight: 1.12, color: "#f0e8d5", margin: 0 }}>
             Elle a remporté l'Oscar
           </h1>
-          <h1 style={{ fontFamily: "Playfair Display, serif",
-            fontSize: "clamp(2.2rem,5vw,4.8rem)", fontWeight: 400,
-            fontStyle: "italic", lineHeight: 1.1,
-            color: "rgba(240,232,213,0.45)", margin: 0 }}>
+          <h1 style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(2.4rem,5vw,4.6rem)",
+            fontStyle: "italic", lineHeight: 1.12, color: "#a89e8e", margin: 0 }}>
             qu'elle n'avait pas le droit de célébrer.
           </h1>
-        </div>
-
-        <div style={{ position: "absolute", bottom: "3rem", right: "8vw",
-          display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8, zIndex: 3 }}>
-          <div style={{ width: 1, height: 40,
-            background: "linear-gradient(to bottom, transparent, rgba(184,145,74,0.25))" }} />
-          <span style={{ fontFamily: "DM Mono, monospace", fontSize: 8,
-            letterSpacing: "0.35em", color: "rgba(184,145,74,0.25)",
-            textTransform: "uppercase" }}>défiler</span>
         </div>
       </section>
 
       {/* ── §2 LE SYSTÈME ────────────────────────────────────────── */}
-      <section style={{ padding: "14vh 8vw 10vh" }}>
-
-        {/* Texte narratif — 45% de la largeur, laisse le vide à droite */}
-        <p className="data-reveal" style={{ fontFamily: "Playfair Display, serif",
-          fontSize: "clamp(1.1rem,1.9vw,1.45rem)", lineHeight: 1.9,
-          color: "#c8bfa8", width: "45%", marginBottom: "4vh" }}>
+      <section style={gridSection("14vh", "8vh")}>
+        <p className="data-reveal" style={{ ...col(1, 6), fontFamily: "Playfair Display, serif",
+          fontSize: "clamp(1.2rem,2vw,1.55rem)", lineHeight: 1.85, color: "#d8cfc0", marginBottom: "3vh" }}>
           En 1930, le Code Hays entre en vigueur. Il ne dit pas que les actrices noires
           n'ont pas le droit d'exister dans les films. Il rend simplement impossible
           qu'elles y existent autrement que dans des rôles de service.
         </p>
-        <p className="data-reveal" style={{ fontFamily: "Playfair Display, serif",
-          fontSize: "clamp(1.1rem,1.9vw,1.45rem)", lineHeight: 1.9,
-          color: "#4a4540", fontStyle: "italic",
-          width: "45%", marginBottom: "10vh" }}>
+        <p className="data-reveal" style={{ ...col(1, 5), fontFamily: "Playfair Display, serif",
+          fontSize: "clamp(1.1rem,1.9vw,1.4rem)", lineHeight: 1.85, color: "#8a8276",
+          fontStyle: "italic", marginBottom: "8vh" }}>
           Ce système précède Hattie McDaniel. C'est ce qui le rend difficile à combattre.
         </p>
 
-        {/* Donnée 1930 — pleine largeur, deux colonnes naturelles */}
-        <div className="data-reveal" style={{ display: "flex", alignItems: "flex-start",
-          gap: "4vw", marginBottom: "10vh",
-          borderTop: "1px solid #1e1b16", paddingTop: "4vh" }}>
-          <span style={{ fontFamily: "Playfair Display, serif",
-            fontSize: "clamp(4rem,9vw,8rem)", fontWeight: 900,
-            color: "#b8914a", lineHeight: 1, flexShrink: 0 }}>
-            1930
-          </span>
-          <div style={{ paddingTop: "1rem" }}>
-            <p style={{ fontFamily: "Playfair Display, serif",
-              fontSize: "clamp(1rem,1.7vw,1.3rem)", lineHeight: 1.85,
-              color: "#c8bfa8", marginBottom: "0.75rem" }}>
-              Le Code Hays interdit les relations romantiques interraciales à l'écran.
-            </p>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-              color: "#3d3830", letterSpacing: "0.1em" }}>
-              Source : Motion Picture Production Code, 1930. MPAA Archives.
-            </p>
-          </div>
+        <div className="data-reveal" style={{ ...col(1, 3), borderTop: "1px solid #2a2620", paddingTop: "3vh" }}>
+          <span style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(3rem,6vw,5rem)",
+            fontWeight: 900, color: "#d4a853", lineHeight: 1 }}>1930</span>
+        </div>
+        <div className="data-reveal" style={{ ...col(4, 6), borderTop: "1px solid #2a2620",
+          paddingTop: "3vh", marginBottom: "10vh" }}>
+          <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(1.1rem,1.8vw,1.35rem)",
+            lineHeight: 1.85, color: "#d8cfc0", marginBottom: "0.75rem" }}>
+            Le Code Hays interdit les relations romantiques interraciales à l'écran.
+          </p>
+          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11, color: "#5c5448" }}>
+            Source : Motion Picture Production Code, 1930. MPAA Archives.
+          </p>
         </div>
 
-        {/* Texte + grand nombre */}
-        <p className="data-reveal" style={{ fontFamily: "Playfair Display, serif",
-          fontSize: "clamp(1.1rem,1.9vw,1.45rem)", lineHeight: 1.9,
-          color: "#c8bfa8", marginBottom: "0" }}>
+        <p className="data-reveal count-trigger" style={{ ...col(1, 7), fontFamily: "Playfair Display, serif",
+          fontSize: "clamp(1.2rem,2vw,1.55rem)", lineHeight: 1.85, color: "#d8cfc0", marginBottom: 0 }}>
           Dans ce cadre, Hattie McDaniel a tourné dans
         </p>
-
-        {/* Trigger séparé pour le compteur */}
-        <div className="count-trigger" style={{ height: 1, marginBottom: 0 }} />
-
-        {/* 309 — énorme, déborde vers la droite */}
-        <div style={{ margin: "0 0 2vh", lineHeight: 0.85 }}>
-          <span style={{ fontFamily: "Playfair Display, serif",
-            fontSize: "clamp(8rem,20vw,16rem)", fontWeight: 900,
-            color: "#b8914a", display: "block", letterSpacing: "-0.03em" }}>
+        <div style={{ ...col(1, 8), lineHeight: 0.85 }}>
+          <span style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(7rem,16vw,13rem)",
+            fontWeight: 900, color: "#d4a853", display: "block", letterSpacing: "-0.02em" }}>
             {counter}
           </span>
-          <span style={{ fontFamily: "DM Mono, monospace", fontSize: 10,
-            color: "#7a7060", letterSpacing: "0.35em", textTransform: "uppercase",
-            display: "block", paddingLeft: "0.5rem" }}>
-            films
-          </span>
+          <span style={{ fontFamily: "DM Mono, monospace", fontSize: 13, color: "#8a8276",
+            letterSpacing: "0.25em", textTransform: "uppercase" }}>films</span>
         </div>
-
-        <p className="data-reveal" style={{ fontFamily: "Playfair Display, serif",
-          fontSize: "clamp(1rem,1.8vw,1.3rem)", lineHeight: 1.9,
-          color: "#7a7060", fontStyle: "italic",
-          width: "45%", marginBottom: "1vh" }}>
+        <p className="data-reveal" style={{ ...col(1, 6), fontFamily: "Playfair Display, serif",
+          fontSize: "clamp(1.1rem,1.8vw,1.35rem)", lineHeight: 1.85, color: "#8a8276",
+          fontStyle: "italic", marginTop: "2vh", marginBottom: "0.5rem" }}>
           Dans 87% d'entre eux, elle jouait une domestique.
         </p>
-        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-          color: "#3d3830", letterSpacing: "0.1em", lineHeight: 1.6,
-          marginBottom: "10vh" }}>
+        <p style={{ ...col(1, 6), fontFamily: "DM Mono, monospace", fontSize: 11, color: "#5c5448" }}>
           Source : IMDb, filmographie complète Hattie McDaniel. Black Film Archive.
         </p>
       </section>
 
-      {/* ── GRILLE DE TÊTES — pleine largeur ─────────────────────── */}
-      <section style={{ padding: "6vh 8vw 10vh", background: "#0e0c09" }}>
-
-        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-          color: "#b8914a", letterSpacing: "0.4em",
-          textTransform: "uppercase", marginBottom: "1rem" }}>
-          309 films · chaque visage est un rôle
+      {/* ── GRILLE DE 309 TÊTES — interactive ─────────────────────── */}
+      <section style={{ padding: "8vh 8vw", background: "#0e0c09" }}>
+        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 13, color: "#d4a853",
+          letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+          309 films · cliquez sur un visage
         </p>
-        {/* Légende avec images réelles */}
-        <div style={{ display: "flex", gap: "2rem", marginBottom: "1.8rem", flexWrap: "wrap" }}>
-          {[
-            { src: "/images/hattie-mcdaniel.jpg", label: "Domestique / Mammy", pct: "87%" },
-            { src: "/images/hattie-mcdaniel.jpg", label: "Comic Relief", pct: "8%" },
-            { src: "/images/hattie-mcdaniel.jpg", label: "Nourrice", pct: "3%" },
-            { src: "/images/hattie-mcdaniel.jpg", label: "Autre", pct: "2%" },
-          ].map((l, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{
-                width: 36, height: 36, position: "relative",
-                flexShrink: 0, overflow: "hidden",
-                border: "1px solid #2a2620",
-              }}>
-                <Image src={l.src} alt={l.label} fill
-                  style={{ objectFit: "cover", objectPosition: "top center",
-                    filter: [
-                      "grayscale(100%) contrast(1.2) brightness(0.55)",         // domestique
-                      "grayscale(100%) sepia(0.4) contrast(1.1) brightness(0.6)", // comic
-                      "grayscale(100%) contrast(1.1) brightness(0.45)",           // nourrice
-                      "grayscale(100%) brightness(0.35)",                         // autre
-                    ][i]
-                  }} />
-              </div>
-              <div>
-                <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-                  color: "#c8bfa8", letterSpacing: "0.05em", lineHeight: 1.2 }}>
-                  {l.label}
-                </p>
-                <p style={{ fontFamily: "DM Mono, monospace", fontSize: 8,
-                  color: "#7a7060", letterSpacing: "0.1em" }}>
-                  {l.pct}
-                </p>
-              </div>
+        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12, color: "#5c5448", marginBottom: "1.5rem" }}>
+          Chaque visage représente un rôle qu'elle a tenu.
+        </p>
+
+        <div className="heads-trigger" style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: "1.5rem" }}>
+          {ROLES.map((role, i) => (
+            <div key={i} style={{
+              opacity: headsVisible ? 1 : 0,
+              transform: headsVisible ? "scale(1)" : "scale(0.7)",
+              transition: `opacity 0.3s ${(i * 4) % 500}ms, transform 0.3s ${(i * 4) % 500}ms`,
+            }}>
+              <PhotoHead role={role} size={26} onClick={() => setSelectedHead({ role, idx: i })} />
             </div>
           ))}
         </div>
 
-        {/* Grille pleine largeur */}
-        <div className="heads-trigger" style={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-          {ROLES.map((role, i) => (
-            <div key={i}
-              onMouseEnter={() => setActiveHead(i)}
-              onMouseLeave={() => setActiveHead(null)}
-              style={{
-                opacity: headsVisible ? 1 : 0,
-                transform: headsVisible ? "scale(1)" : "scale(0.7)",
-                transition: `opacity 0.35s ${(i * 4) % 600}ms, transform 0.35s ${(i * 4) % 600}ms`,
-                position: "relative", cursor: "default",
-              }}>
-              <PhotoHead role={role} size={26} />
-              {activeHead === i && (
-                <div style={{
-                  position: "absolute", bottom: "calc(100% + 4px)", left: "50%",
-                  transform: "translateX(-50%)", background: "#0e0c09",
-                  border: "1px solid #3d3830", padding: "3px 7px",
-                  whiteSpace: "nowrap", fontFamily: "DM Mono, monospace",
-                  fontSize: 8, color: "#c8bfa8", letterSpacing: "0.1em",
-                  zIndex: 10, pointerEvents: "none",
-                }}>
-                  {role === "maid" ? "Domestique"
-                    : role === "comic" ? "Comic relief"
-                    : role === "nurse" ? "Nourrice" : "Autre"}
-                </div>
-              )}
+        {/* Panneau de détail au clic — vraie interaction, pas un tooltip hover */}
+        {selectedHead && (
+          <div style={{
+            display: "flex", alignItems: "center", gap: "1.5rem",
+            padding: "1.2rem 1.5rem", background: "#161310",
+            border: "1px solid #3a352c", marginTop: "1rem", maxWidth: 480,
+          }}>
+            <div style={{ width: 56, height: 56, position: "relative", overflow: "hidden", flexShrink: 0 }}>
+              <Image src={ROLE_IMAGES[selectedHead.role]} alt="" fill
+                style={{ objectFit: "cover", objectPosition: "50% 20%", filter: ROLE_FILTERS[selectedHead.role] }} />
             </div>
-          ))}
-        </div>
-        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 10,
-          color: "#7a7060", marginTop: "1.5rem", letterSpacing: "0.1em" }}>
+            <div>
+              <p style={{ fontFamily: "Playfair Display, serif", fontStyle: "italic",
+                fontSize: "1.1rem", color: "#f0e8d5" }}>{roleLabel(selectedHead.role)}</p>
+              <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12, color: "#8a8276", marginTop: "0.2rem" }}>
+                {roleFilm(selectedHead.role)} · rôle {selectedHead.idx + 1} sur 309
+              </p>
+            </div>
+            <button onClick={() => setSelectedHead(null)} style={{
+              marginLeft: "auto", background: "none", border: "none",
+              color: "#5c5448", cursor: "pointer", fontSize: 18, padding: "0.3rem",
+            }}>×</button>
+          </div>
+        )}
+
+        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12, color: "#8a8276", marginTop: "1.5rem" }}>
           Aucun rôle principal. Aucun personnage libre. Toutes des servantes.
         </p>
       </section>
 
       {/* ── SUITE §2 — Donnée 2 + fait divers ────────────────────── */}
-      <section style={{ padding: "10vh 8vw" }}>
-
-        <div className="data-reveal" style={{ display: "flex", alignItems: "flex-start",
-          gap: "4vw", marginBottom: "8vh",
-          borderTop: "1px solid #1e1b16", paddingTop: "4vh" }}>
-          <span style={{ fontFamily: "Playfair Display, serif",
-            fontSize: "clamp(4rem,9vw,8rem)", fontWeight: 900,
-            color: "#2a2620", lineHeight: 1, flexShrink: 0 }}>
-            1940
-          </span>
-          <div style={{ paddingTop: "1rem" }}>
-            <p style={{ fontFamily: "Playfair Display, serif",
-              fontSize: "clamp(1rem,1.7vw,1.3rem)", lineHeight: 1.85,
-              color: "#c8bfa8", marginBottom: "0.75rem" }}>
-              L'hôtel Ambassador de Los Angeles pratique la ségrégation raciale.
-              Hattie McDaniel n'est autorisée à y entrer que grâce à une intervention
-              personnelle du producteur David O. Selznick.
-            </p>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-              color: "#3d3830", letterSpacing: "0.1em" }}>
-              Source : Donald Bogle, Bright Boulevards, Bold Dreams, 2005.
-            </p>
-          </div>
+      <section style={gridSection("10vh", "10vh")}>
+        <div className="data-reveal" style={{ ...col(1, 3), borderTop: "1px solid #2a2620", paddingTop: "3vh" }}>
+          <span style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(3rem,6vw,5rem)",
+            fontWeight: 900, color: "#5c5448", lineHeight: 1 }}>1940</span>
+        </div>
+        <div className="data-reveal" style={{ ...col(4, 7), borderTop: "1px solid #2a2620",
+          paddingTop: "3vh", marginBottom: "8vh" }}>
+          <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(1.1rem,1.8vw,1.35rem)",
+            lineHeight: 1.85, color: "#d8cfc0", marginBottom: "0.75rem" }}>
+            L'hôtel Ambassador de Los Angeles pratique la ségrégation raciale. Hattie McDaniel
+            n'est autorisée à y entrer que grâce à une intervention personnelle du producteur
+            David O. Selznick.
+          </p>
+          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11, color: "#5c5448" }}>
+            Source : Donald Bogle, Bright Boulevards, Bold Dreams, 2005.
+          </p>
         </div>
 
-        {/* Fait divers ancré à gauche */}
-        <div style={{ width: "55%" }}>
-          <FaitDivers
-            date="15 décembre 1939 — Atlanta, Géorgie"
-            lieu="Loew's Grand Theatre"
-            source="Jill Watts, Hattie McDaniel: Black Ambition, White Hollywood, 2005."
-          >
-            La première de{" "}
-            <span style={{ fontStyle: "italic" }}>Gone with the Wind</span>{" "}
-            a lieu au Loew's Grand Theatre. Hattie McDaniel n'est pas invitée.
-            Les lois de ségrégation de l'État interdisent sa présence dans les salles
-            réservées aux Blancs. Clark Gable propose de boycotter la soirée.
-            McDaniel lui demande de ne pas le faire.
+        <div style={{ ...col(1, 8) }}>
+          <FaitDivers date="15 décembre 1939 — Atlanta, Géorgie" lieu="Loew's Grand Theatre"
+            source="Jill Watts, Hattie McDaniel: Black Ambition, White Hollywood, 2005.">
+            La première de <span style={{ fontStyle: "italic" }}>Gone with the Wind</span> a lieu
+            au Loew's Grand Theatre. Hattie McDaniel n'est pas invitée. Les lois de ségrégation
+            de l'État interdisent sa présence dans les salles réservées aux Blancs.
+            Clark Gable propose de boycotter la soirée. McDaniel lui demande de ne pas le faire.
           </FaitDivers>
         </div>
       </section>
 
-      {/* ── §3 LE CHOIX IMPOSSIBLE ───────────────────────────────── */}
-      <section style={{ padding: "10vh 8vw", background: "#060504",
-        borderTop: "1px solid #1a1710" }}>
-
-        {/* Citation — 60% depuis la gauche */}
-        <div style={{ width: "60%", marginBottom: "8vh" }}>
-          <p style={{ fontFamily: "Playfair Display, serif",
-            fontSize: "clamp(1rem,1.8vw,1.35rem)", lineHeight: 1.9,
-            color: "#c8bfa8", marginBottom: "4vh" }}>
-            Face aux critiques de la NAACP qui l'accusait de trahir sa communauté,
-            Hattie McDaniel avait une réponse.
-          </p>
-          <InlineQuote
-            text="Je préfère jouer une femme de chambre que l'être."
-            author="Hattie McDaniel"
-            accentColor="#b8914a"
-          />
+      {/* ── §3 LE CHOIX IMPOSSIBLE — photogrammes cliquables ─────── */}
+      <section style={{ padding: "10vh 8vw", background: "#060504", borderTop: "1px solid #1a1710" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: "1.5rem", marginBottom: "6vh" }}>
+          <div style={{ gridColumn: "1 / span 7" }}>
+            <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(1.1rem,1.8vw,1.35rem)",
+              lineHeight: 1.85, color: "#d8cfc0", marginBottom: "3vh" }}>
+              Face aux critiques de la NAACP qui l'accusait de trahir sa communauté,
+              Hattie McDaniel avait une réponse.
+            </p>
+            <InlineQuote text="Je préfère jouer une femme de chambre que l'être." author="Hattie McDaniel" />
+          </div>
         </div>
 
-        {/* Deux colonnes — pleine largeur bord à bord */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0,
-          marginLeft: "-8vw", marginRight: "-8vw" }}>
-
-          {/* Gauche */}
-          <div className="col-left" style={{ opacity: 0, padding: "4vh 8vw" }}>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-              color: "#b8914a", letterSpacing: "0.35em",
-              textTransform: "uppercase", marginBottom: "2.5rem" }}>
-              Ce que l'industrie lui proposait
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: "1.5rem" }}>
+          <div className="col-left" style={{ gridColumn: "1 / span 6", opacity: 0 }}>
+            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12, color: "#d4a853",
+              letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+              Ce que l'industrie lui proposait — cliquez pour agrandir
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
-                <Photogram src="/images/judgepriest.jpg"    title="Judge Priest"        year="1934" role="Dilsey, domestique" />
-                <Photogram src="/images/aliceadams.jpg"     title="Alice Adams"         year="1935" role="Malena Burns, cuisinière" />
-                <Photogram src="/images/showboat.jpg"       title="Show Boat"           year="1936" role="Queenie, lavandière" />
-                <Photogram src="/images/gonewiththewind.jpg" title="Gone with the Wind"  year="1939" role="Mammy" />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.8rem" }}>
+              {[
+                { src: "/images/judgepriest.jpg", title: "Judge Priest", year: "1934", role: "Dilsey, domestique" },
+                { src: "/images/aliceadams.jpg", title: "Alice Adams", year: "1935", role: "Cuisinière" },
+                { src: "/images/showboat.jpg", title: "Show Boat", year: "1936", role: "Lavandière" },
+                { src: "/images/gonewiththewind.jpg", title: "Gone with the Wind", year: "1939", role: "Mammy" },
+              ].map((f, i) => (
+                <div key={i} style={{ gridColumn: expandedFilm === i ? "1 / span 2" : "auto" }}>
+                  <Photogram {...f} expanded={expandedFilm === i}
+                    onToggle={() => setExpandedFilm(expandedFilm === i ? null : i)} />
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Droite */}
-          <div className="col-right" style={{ opacity: 0, padding: "4vh 8vw",
-            borderLeft: "1px solid #1a1710" }}>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-              color: "#3d3830", letterSpacing: "0.35em",
-              textTransform: "uppercase", marginBottom: "2.5rem" }}>
+          <div className="col-right" style={{ ...col(8, 5), opacity: 0 }}>
+            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12, color: "#5c5448",
+              letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "1.5rem" }}>
               Ce qu'elle n'a jamais obtenu
             </p>
-            <p style={{ fontFamily: "Playfair Display, serif",
-              fontSize: "clamp(0.95rem,1.6vw,1.2rem)", lineHeight: 1.9,
-              color: "#7a7060", marginBottom: "2.5rem" }}>
+            <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(1rem,1.6vw,1.2rem)",
+              lineHeight: 1.85, color: "#8a8276", marginBottom: "1.5rem" }}>
               Des rôles dramatiques complexes. Des femmes avec une vie intérieure.
               Des personnages qui ne sont pas définis par leur relation de service
               à des personnages blancs.
             </p>
-            <p style={{ fontFamily: "Playfair Display, serif",
-              fontSize: "clamp(0.95rem,1.6vw,1.2rem)", lineHeight: 1.9,
-              color: "#4a4540", fontStyle: "italic", marginBottom: "2.5rem" }}>
+            <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(1rem,1.6vw,1.2rem)",
+              lineHeight: 1.85, color: "#6b6358", fontStyle: "italic", marginBottom: "1.5rem" }}>
               Les archives de sa correspondance montrent des demandes répétées.
               Des refus systématiques.
             </p>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-              color: "#3d3830", letterSpacing: "0.1em", lineHeight: 1.6,
-              marginBottom: "3rem" }}>
-              Source : Jill Watts, Hattie McDaniel:<br />
-              Black Ambition, White Hollywood, 2005.
+            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11, color: "#5c5448", lineHeight: 1.6 }}>
+              Source : Jill Watts, Hattie McDaniel: Black Ambition, White Hollywood, 2005.
             </p>
-            {/* Zone vide — volontaire */}
-            <div style={{ height: "16rem", border: "1px solid #1a1710",
-              display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <p style={{ fontFamily: "DM Mono, monospace", fontSize: 8,
-                color: "#1e1b16", letterSpacing: "0.25em", textTransform: "uppercase" }}>
-                vide
-              </p>
+            <div style={{ marginTop: "2rem", padding: "2rem", border: "1px dashed #2a2620",
+              fontFamily: "DM Mono, monospace", fontSize: 11, color: "#3a352c",
+              textTransform: "uppercase", letterSpacing: "0.2em" }}>
+              espace volontairement vide
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── §4 LA NUIT DES OSCARS ────────────────────────────────── */}
-      <OscarTimeline />
-
-      {/* ── VIDÉO + FAIT DIVERS ──────────────────────────────────── */}
-      <section style={{ padding: "12vh 8vw" }}>
-
-        <p style={{ fontFamily: "Playfair Display, serif",
-          fontSize: "clamp(1rem,1.8vw,1.35rem)", lineHeight: 1.9,
-          color: "#c8bfa8", width: "55%", marginBottom: "4vh" }}>
+      {/* ── VIDÉO — déplacée AVANT la timeline ───────────────────── */}
+      <section style={gridSection("12vh", "12vh")}>
+        <p style={{ ...col(1, 7), fontFamily: "Playfair Display, serif",
+          fontSize: "clamp(1.1rem,1.8vw,1.35rem)", lineHeight: 1.85, color: "#d8cfc0", marginBottom: "4vh" }}>
           Ce soir-là, Hattie McDaniel prononce un discours.
           Le studio l'a réécrit. Elle le sait. Elle le lit quand même.
         </p>
-
-        {/* Vidéo — pleine largeur - 8vw */}
-        <div style={{ position: "relative", width: "100%", paddingBottom: "56.25%",
-          background: "#0e0c09", border: "1px solid #1a1710", marginBottom: "5vh" }}>
-          <iframe
-            style={{ position: "absolute", inset: 0, width: "100%",
-              height: "100%", border: "none" }}
+        <div style={{ ...col(1, 12), position: "relative", paddingBottom: "47%",
+          background: "#0e0c09", border: "1px solid #1a1710", marginBottom: "1rem" }}>
+          <iframe style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
             src="https://www.youtube.com/embed/e7t4pTNZshA?rel=0&modestbranding=1&color=white"
-            title="Hattie McDaniel — Academy Award 1940"
-            allowFullScreen loading="lazy"
-          />
+            title="Hattie McDaniel — Academy Award 1940" allowFullScreen loading="lazy" />
         </div>
-        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-          color: "#3d3830", letterSpacing: "0.15em", marginBottom: "6vh", lineHeight: 1.7 }}>
+        <p style={{ ...col(1, 8), fontFamily: "DM Mono, monospace", fontSize: 11, color: "#5c5448" }}>
           Extrait documentaire · Hattie McDaniel · Academy Award 1940
         </p>
+      </section>
 
-        <p style={{ fontFamily: "Playfair Display, serif",
-          fontSize: "clamp(1rem,1.8vw,1.35rem)", lineHeight: 1.9,
-          color: "#7a7060", fontStyle: "italic",
-          width: "45%", marginBottom: "6vh" }}>
+      {/* ── §4 LA NUIT DES OSCARS — après la vidéo ───────────────── */}
+      <OscarTimeline />
+
+      <section style={gridSection("8vh", "8vh")}>
+        <p style={{ ...col(1, 6), fontFamily: "Playfair Display, serif", fontSize: "clamp(1rem,1.7vw,1.3rem)",
+          lineHeight: 1.85, color: "#8a8276", fontStyle: "italic", marginBottom: "4vh" }}>
           Après cette nuit, rien ne change.
         </p>
-
-        {/* Fait divers ancré à droite */}
-        <div style={{ marginLeft: "auto", width: "40%" }}>
-          <FaitDivers
-            date="27 février 1940 — Los Angeles"
-            lieu="La même nuit"
-            source="Executive Order 9981, July 26, 1948. National Archives."
-          >
-            L'armée américaine est encore entièrement ségrégée. Il faudra attendre
-            1948 et le décret exécutif 9981 du président Truman pour que la
-            déségrégation militaire soit ordonnée. Hattie McDaniel reçoit son Oscar
-            dans un pays où les soldats noirs servent dans des unités séparées.
+        <div style={{ ...col(6, 7) }}>
+          <FaitDivers date="27 février 1940 — Los Angeles" lieu="La même nuit"
+            source="Executive Order 9981, July 26, 1948. National Archives.">
+            L'armée américaine est encore entièrement ségrégée. Il faudra attendre 1948 et
+            le décret exécutif 9981 du président Truman pour que la déségrégation militaire
+            soit ordonnée. Hattie McDaniel reçoit son Oscar dans un pays où les soldats noirs
+            servent dans des unités séparées.
           </FaitDivers>
         </div>
       </section>
 
       {/* ── §5 LA FRICTION ───────────────────────────────────────── */}
-      <section style={{ padding: "12vh 8vw", background: "#0e0c09",
-        borderTop: "1px solid #1a1710" }}>
-
-        <p style={{ fontFamily: "Playfair Display, serif",
-          fontSize: "clamp(1rem,1.8vw,1.35rem)", lineHeight: 1.9,
-          color: "#c8bfa8", width: "45%", marginBottom: "8vh" }}>
-          La NAACP condamnait ses choix. Elle les défendait.
-          Après son Oscar, le système n'a pas bougé.
+      <section style={{ ...gridSection("12vh", "12vh"), background: "#0e0c09", borderTop: "1px solid #1a1710" }}>
+        <p style={{ ...col(1, 6), fontFamily: "Playfair Display, serif", fontSize: "clamp(1.1rem,1.8vw,1.35rem)",
+          lineHeight: 1.85, color: "#d8cfc0", marginBottom: "8vh" }}>
+          La NAACP condamnait ses choix. Elle les défendait. Après son Oscar, le système n'a pas bougé.
         </p>
 
-        {/* Grand 0 — immense, ancré à gauche */}
-        <div className="friction-zero" style={{ opacity: 0, marginBottom: "0" }}>
-          <span style={{
-            fontFamily: "Playfair Display, serif",
-            fontSize: "clamp(10rem,28vw,22rem)",
-            fontWeight: 900, color: "#8b0000",
-            display: "block", lineHeight: 0.85,
-            letterSpacing: "-0.04em",
-          }}>
-            0
-          </span>
+        <div className="friction-zero" style={{ ...col(1, 9), opacity: 0 }}>
+          <span style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(9rem,22vw,18rem)",
+            fontWeight: 900, color: "#b03a3a", display: "block", lineHeight: 0.85, letterSpacing: "-0.03em" }}>0</span>
         </div>
 
-        {/* Texte sous le 0 — ancré à gauche, 40% */}
-        <div style={{ width: "40%", marginBottom: "8vh" }}>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 10,
-            color: "rgba(139,0,0,0.6)", letterSpacing: "0.2em",
-            textTransform: "uppercase", lineHeight: 1.7, marginBottom: "0.75rem" }}>
+        <div style={{ ...col(1, 5), marginBottom: "8vh" }}>
+          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 13, color: "#c97a7a",
+            letterSpacing: "0.1em", lineHeight: 1.7, marginBottom: "0.75rem" }}>
             nouveaux types de rôles disponibles pour les actrices noires après son Oscar
           </p>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
-            color: "#3d3830", letterSpacing: "0.1em" }}>
+          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11, color: "#5c5448" }}>
             Source : Donald Bogle, Toms, Coons, Mulattoes, Mammies, and Bucks, 1973.
           </p>
         </div>
 
-        {/* Citation voix off — ancrée à droite */}
-        <div style={{ marginLeft: "30%", marginBottom: "8vh",
-          paddingTop: "5vh", borderTop: "1px solid #1a1710" }}>
+        <div style={{ ...col(5, 7), borderTop: "1px solid #2a2620", paddingTop: "5vh", marginBottom: "8vh" }}>
           <InlineQuote
             text="Pourquoi me plaindrais-je de gagner sept mille dollars par semaine en jouant une femme de chambre ? Si je ne le faisais pas, je gagnerais sept dollars par semaine à l'être."
-            author="Hattie McDaniel, 1947"
-            accentColor="#b8914a"
-          />
+            author="Hattie McDaniel, 1947" />
         </div>
 
-        {/* Épilogue — ancré à gauche, 45% */}
-        <div style={{ width: "45%", paddingTop: "5vh",
-          borderTop: "1px solid #1a1710", marginBottom: "8vh" }}>
-          <p style={{ fontFamily: "Playfair Display, serif",
-            fontSize: "clamp(1rem,1.7vw,1.25rem)", lineHeight: 1.9,
-            color: "#7a7060", marginBottom: "2vh" }}>
+        <div style={{ ...col(1, 6), borderTop: "1px solid #2a2620", paddingTop: "5vh", marginBottom: "8vh" }}>
+          <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(1rem,1.6vw,1.2rem)",
+            lineHeight: 1.85, color: "#8a8276", marginBottom: "2vh" }}>
             Elle meurt en 1952. Elle avait demandé à être enterrée au Hollywood Cemetery.
             Le cimetière refusait les Noirs. Sa demande est rejetée.
           </p>
-          <p style={{ fontFamily: "Playfair Display, serif",
-            fontSize: "clamp(1rem,1.7vw,1.25rem)", lineHeight: 1.9,
-            color: "#3d3830", fontStyle: "italic" }}>
+          <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(1rem,1.6vw,1.2rem)",
+            lineHeight: 1.85, color: "#6b6358", fontStyle: "italic" }}>
             En 1999, le Hollywood Forever Cemetery lui accorde une sépulture commémorative.
             Cinquante ans après.
           </p>
         </div>
 
-        {/* Phrase de friction — pleine largeur, très grande */}
-        <div className="friction-phrase" style={{ opacity: 0 }}>
-          <p style={{ fontFamily: "Playfair Display, serif",
-            fontSize: "clamp(2rem,4vw,3.5rem)", fontStyle: "italic",
-            color: "#8b0000", lineHeight: 1.3 }}>
-            "L'industrie l'a récompensée pour avoir joué<br />
-            un rôle qui niait son humanité."
+        <div className="friction-phrase" style={{ ...col(1, 12), opacity: 0 }}>
+          <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(2rem,3.8vw,3.2rem)",
+            fontStyle: "italic", color: "#c97a7a", lineHeight: 1.3 }}>
+            "L'industrie l'a récompensée pour avoir joué<br />un rôle qui niait son humanité."
           </p>
         </div>
       </section>
@@ -873,31 +659,22 @@ export function HattiePage() {
       <section style={{ minHeight: "100vh", position: "relative",
         display: "flex", flexDirection: "column", justifyContent: "flex-end",
         padding: "0 8vw 12vh" }}>
-
-        {/* Image plein écran, très basse opacité */}
         <div style={{ position: "absolute", inset: 0 }}>
           <Image src="/images/hattie-mcdaniel.jpg" alt="" fill
-            style={{ objectFit: "cover", objectPosition: "top",
-              filter: "grayscale(100%) brightness(0.2)" }} />
-          <div style={{ position: "absolute", inset: 0,
-            background: "rgba(10,9,6,0.88)" }} />
+            style={{ objectFit: "cover", objectPosition: "top", filter: "grayscale(100%) brightness(0.2)" }} />
+          <div style={{ position: "absolute", inset: 0, background: "rgba(10,9,6,0.85)" }} />
         </div>
 
-        {/* Phrase finale — ancrée à gauche, grande */}
-        <div className="exit-left" style={{ opacity: 0, position: "relative",
-          zIndex: 2, width: "55%", marginBottom: "8vh" }}>
-          <p style={{ fontFamily: "Playfair Display, serif",
-            fontSize: "clamp(1.8rem,3.5vw,3rem)", fontStyle: "italic",
-            color: "#c8bfa8", lineHeight: 1.3 }}>
+        <div className="exit-left" style={{ opacity: 0, position: "relative", zIndex: 2,
+          width: "min(640px, 55%)", marginBottom: "6vh" }}>
+          <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(1.8rem,3.2vw,2.8rem)",
+            fontStyle: "italic", color: "#d8cfc0", lineHeight: 1.3 }}>
             "La reconnaissance peut être<br />une forme d'enfermement."
           </p>
         </div>
 
-        {/* Liens — en bas à droite */}
-        <div className="exit-right" style={{ opacity: 0, position: "relative",
-          zIndex: 2, display: "flex", flexDirection: "column",
-          alignItems: "flex-end", gap: "1.2rem",
-          marginLeft: "auto" }}>
+        <div className="exit-right" style={{ opacity: 0, position: "relative", zIndex: 2,
+          display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "1.2rem", marginLeft: "auto" }}>
           {[
             { href: "/figure/dorothy-dandridge", label: "Dorothy Dandridge",
               sub: "La même industrie. Le même piège. Dix ans plus tard." },
@@ -905,39 +682,18 @@ export function HattiePage() {
               sub: "Soixante ans plus tard. Une autre première fois. Une autre impasse." },
           ].map(link => (
             <Link key={link.href} href={link.href} style={{
-              fontFamily: "Playfair Display, serif", fontSize: "1rem",
-              color: "#7a7060", textDecoration: "none", textAlign: "right",
+              fontFamily: "Playfair Display, serif", fontSize: "1.1rem", color: "#8a8276",
+              textDecoration: "none", textAlign: "right",
               borderBottom: "1px solid #2a2620", paddingBottom: "0.2rem",
               transition: "color 0.3s, border-color 0.3s",
             }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.color = "#b8914a"
-              ;(e.currentTarget as HTMLElement).style.borderColor = "rgba(184,145,74,0.4)"
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.color = "#7a7060"
-              ;(e.currentTarget as HTMLElement).style.borderColor = "#2a2620"
-            }}>
-              {link.label} ·{" "}
-              <span style={{ fontStyle: "italic", fontSize: "0.9rem" }}>{link.sub}</span>{" "}→
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#d4a853"; (e.currentTarget as HTMLElement).style.borderColor = "#d4a853" }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "#8a8276"; (e.currentTarget as HTMLElement).style.borderColor = "#2a2620" }}>
+              {link.label} · <span style={{ fontStyle: "italic", fontSize: "1rem" }}>{link.sub}</span> →
             </Link>
           ))}
         </div>
-
-        {/* Lien hub — bas gauche, très petit */}
-        <Link href="/" style={{
-          position: "absolute", bottom: "3rem", left: "8vw",
-          fontFamily: "DM Mono, monospace", fontSize: 9,
-          color: "#2a2620", textDecoration: "none",
-          letterSpacing: "0.3em", textTransform: "uppercase",
-          zIndex: 2, transition: "color 0.3s",
-        }}
-        onMouseEnter={e => (e.currentTarget as HTMLElement).style.color = "#7a7060"}
-        onMouseLeave={e => (e.currentTarget as HTMLElement).style.color = "#2a2620"}>
-          ← Archive
-        </Link>
       </section>
-
     </div>
   )
 }
