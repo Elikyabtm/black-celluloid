@@ -92,10 +92,10 @@ export default function Home() {
               Black Celluloid
             </h1>
             <p className="text-stone-400 text-lg md:text-xl max-w-2xl mx-auto mb-4 font-light">
-              Une archive qui résiste à ses propres conclusions
+              Comment une industrie peut-elle célébrer une femme noire d'une main, et continuer de l'enfermer de l'autre ?
             </p>
             <p className="text-stone-500 text-sm tracking-[0.3em] uppercase">
-              8 figures — 8 trajectoires — 8 impasses
+              Cinéma - Hollywood - Femmes noires
             </p>
             
             <div className="mt-12 flex flex-col items-center gap-2">
