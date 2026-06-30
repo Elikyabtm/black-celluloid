@@ -91,9 +91,9 @@ export function LupitaPage() {
             <p className="font-mono text-xs tracking-widest uppercase mb-6" style={{ color: "#b8914a" }}>Distribution des rôles féminins noirs principaux · 2013–2023</p>
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={colorismData} layout="vertical">
-                <XAxis type="number" tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "DM Mono" }} axisLine={{ stroke: "#3d3830" }} tickLine={false} unit="%" />
-                <YAxis type="category" dataKey="name" tick={{ fill: "#c8bfa8", fontSize: 9, fontFamily: "DM Mono" }} axisLine={false} tickLine={false} width={200} />
-                <Tooltip contentStyle={{ background: "#0e0c09", border: "1px solid #3d3830", fontFamily: "DM Mono", fontSize: 10, color: "#f0e8d5" }}
+                <XAxis type="number" tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "Syne" }} axisLine={{ stroke: "#3d3830" }} tickLine={false} unit="%" />
+                <YAxis type="category" dataKey="name" tick={{ fill: "#c8bfa8", fontSize: 9, fontFamily: "Syne" }} axisLine={false} tickLine={false} width={200} />
+                <Tooltip contentStyle={{ background: "#0e0c09", border: "1px solid #3d3830", fontFamily: "Syne", fontSize: 10, color: "#f0e8d5" }}
                   formatter={(val: number) => [`${val}%`]} />
                 <Bar dataKey="value" radius={0}>
                   {colorismData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}

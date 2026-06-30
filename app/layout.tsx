@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, Syne, DM_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { VisitedProvider } from '@/components/visited-provider'
 import './globals.css'
 
 const playfair = Playfair_Display({ 
@@ -35,7 +36,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${syne.variable} ${dmMono.variable}`}>
       <body className="antialiased bc-body">
-        {children}
+        <VisitedProvider>
+          {children}
+        </VisitedProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

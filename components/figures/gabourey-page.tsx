@@ -147,10 +147,10 @@ export function GaboureySidibePage() {
             <p className="font-mono text-xs tracking-widest uppercase mb-6" style={{ color: "#b8914a" }}>Activité cinéma vs télévision — 2009–2020</p>
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={careerData}>
-                <XAxis dataKey="year" tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "DM Mono" }} axisLine={{ stroke: "#3d3830" }} tickLine={false} />
-                <YAxis tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "DM Mono" }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ background: "#0e0c09", border: "1px solid #3d3830", fontFamily: "DM Mono", fontSize: 10, color: "#f0e8d5" }} />
-                <Legend formatter={(val) => <span style={{ color: "#c8bfa8", fontSize: 9, fontFamily: "DM Mono" }}>{val}</span>} />
+                <XAxis dataKey="year" tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "Syne" }} axisLine={{ stroke: "#3d3830" }} tickLine={false} />
+                <YAxis tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "Syne" }} axisLine={false} tickLine={false} />
+                <Tooltip contentStyle={{ background: "#0e0c09", border: "1px solid #3d3830", fontFamily: "Syne", fontSize: 10, color: "#f0e8d5" }} />
+                <Legend formatter={(val) => <span style={{ color: "#c8bfa8", fontSize: 9, fontFamily: "Syne" }}>{val}</span>} />
                 <Line type="monotone" dataKey="cinema" name="Cinéma" stroke="#b8914a" strokeWidth={2} dot={{ fill: "#b8914a", r: 4 }} />
                 <Line type="monotone" dataKey="tv" name="Télévision" stroke="#8b2020" strokeWidth={2} dot={{ fill: "#8b2020", r: 4 }} strokeDasharray="4 2" />
               </LineChart>

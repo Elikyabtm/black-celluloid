@@ -98,7 +98,7 @@ export function VoiceQuote({ text, author, accentColor = "#b8914a", audioSrc }: 
             borderColor: isPlaying ? accentColor : "#3d3830",
             color: isPlaying ? accentColor : "#7a7060",
             background: "transparent",
-            fontFamily: "DM Mono",
+            fontFamily: "Syne",
             fontSize: 10,
             letterSpacing: "0.2em",
             textTransform: "uppercase",
@@ -126,7 +126,7 @@ export function VoiceQuote({ text, author, accentColor = "#b8914a", audioSrc }: 
       </div>
 
       {/* Texte — mot par mot */}
-      <blockquote className="leading-relaxed" style={{ fontSize: "clamp(1.1rem,2.2vw,1.65rem)", fontFamily: "Playfair Display, serif", fontStyle: "italic", lineHeight: 1.65 }}>
+      <blockquote className="leading-relaxed" style={{ fontSize: "clamp(1.1rem,2.2vw,1.65rem)", fontFamily: "Playfair Display, Georgia, serif", fontStyle: "italic", lineHeight: 1.65 }}>
         {words.map((word, i) => {
           // Mots forts = en majuscules ou après "jamais", "toujours", "seule"
           const clean = word.replace(/[""".,;:!?]/g, "")

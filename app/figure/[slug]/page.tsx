@@ -10,6 +10,7 @@ import { HalleBaileyPage } from "@/components/figures/halle-bailey-page"
 import { CustomCursor } from "@/components/custom-cursor"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { BackToHub } from "@/components/back-to-hub"
+import { MarkVisited } from "@/components/mark-visited"
 
 const figureComponents: Record<string, React.ComponentType> = {
   "hattie-mcdaniel": HattiePage,
@@ -68,6 +69,7 @@ export default async function FigureRoute({ params }: Props) {
       <ScrollToTop />
       <CustomCursor />
       <BackToHub />
+      <MarkVisited id={slug} />
       <FigureComponent />
     </>
   )

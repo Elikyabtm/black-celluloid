@@ -42,7 +42,7 @@
 @theme inline {
   --font-sans: var(--font-sans), 'Syne', system-ui, sans-serif;
   --font-serif: var(--font-serif), 'Playfair Display', Georgia, serif;
-  --font-mono: var(--font-mono), 'DM Mono', 'Geist Mono', monospace;
+  --font-mono: var(--font-sans), 'Syne', system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -119,11 +119,11 @@
 
 /* Typography utilities */
 .font-display {
-  font-family: 'Playfair Display', var(--font-serif), serif;
+  font-family: var(--font-serif), 'Playfair Display', Georgia, serif;
 }
 
 .font-mono-custom {
-  font-family: 'DM Mono', var(--font-mono), monospace;
+  font-family: var(--font-sans), 'Syne', sans-serif;
 }
 
 /* Color utilities */
@@ -171,7 +171,7 @@
 
 /* Stat number styling */
 .stat-num {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-serif), 'Playfair Display', Georgia, serif;
   font-size: 2.5rem;
   font-weight: 900;
   color: var(--or);
@@ -180,7 +180,7 @@
 
 /* Section label styling */
 .section-label {
-  font-family: 'DM Mono', monospace;
+  font-family: var(--font-sans), 'Syne', sans-serif;
   font-size: 10px;
   letter-spacing: 0.4em;
   color: var(--or);

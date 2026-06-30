@@ -45,7 +45,7 @@ function InlineQuote({ text, accentColor = "#b8914a" }: { text: string; accentCo
         border: `1px solid ${playing ? accentColor : "#3d3830"}`,
         color: playing ? accentColor : "#7a7060",
         background: "transparent", cursor: "pointer",
-        fontFamily: "DM Mono, monospace", fontSize: 9,
+        fontFamily: "Syne, sans-serif", fontSize: 9,
         letterSpacing: "0.2em", textTransform: "uppercase",
         padding: "4px 10px", display: "flex", alignItems: "center", gap: 6,
       }}>
@@ -58,7 +58,7 @@ function InlineQuote({ text, accentColor = "#b8914a" }: { text: string; accentCo
         {playing ? "arrêter" : "écouter"}
       </button>
       <blockquote style={{
-        fontFamily: "Playfair Display, serif", fontStyle: "italic",
+        fontFamily: "Playfair Display, Georgia, serif", fontStyle: "italic",
         fontSize: "clamp(1.3rem,2.5vw,2rem)", lineHeight: 1.6, color: "#f0e8d5",
       }}>
         {text.split(" ").map((word, i) => (
@@ -132,7 +132,7 @@ function CareerCurve() {
 
     // Year labels
     ctx.fillStyle = "#7a7060"
-    ctx.font = "10px DM Mono"
+    ctx.font = "10px Syne"
     ctx.textAlign = "center"
     ;[1940, 1950, 1954, 1960, 1965].forEach(yr => {
       ctx.fillText(String(yr), toX(yr), H - PAD.b + 20)
@@ -205,7 +205,7 @@ function CareerCurve() {
       // Label on hover
       if (isHovered) {
         ctx.fillStyle = "#f0e8d5"
-        ctx.font = "bold 11px DM Mono"
+        ctx.font = "bold 11px Syne"
         ctx.textAlign = "center"
         ctx.fillText(`${p.year} — ${p.label}`, x, y - 14)
       }
@@ -336,12 +336,12 @@ export function DorothyPage() {
 
         <div className="entry-title" style={{ position: "relative", zIndex: 2,
           textAlign: "center", padding: "0 6vw", opacity: 0 }}>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+          <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
             letterSpacing: "0.45em", color: "rgba(184,145,74,0.6)",
             textTransform: "uppercase", marginBottom: "2.5rem" }}>
             Figure II · 1922–1965
           </p>
-          <h1 style={{ fontFamily: "Playfair Display, serif",
+          <h1 style={{ fontFamily: "Playfair Display, Georgia, serif",
             fontSize: "clamp(2rem,5vw,4.5rem)", fontWeight: 900,
             lineHeight: 1.1, color: "#f0e8d5", marginBottom: "2rem" }}>
             "Hollywood a fait d'elle une icône.
@@ -357,7 +357,7 @@ export function DorothyPage() {
           flexDirection: "column", alignItems: "center", gap: 8, zIndex: 2 }}>
           <div style={{ width: 1, height: 48,
             background: "linear-gradient(to bottom, transparent, rgba(184,145,74,0.3))" }} />
-          <span style={{ fontFamily: "DM Mono, monospace", fontSize: 8,
+          <span style={{ fontFamily: "Syne, sans-serif", fontSize: 8,
             letterSpacing: "0.35em", color: "rgba(184,145,74,0.35)",
             textTransform: "uppercase" }}>défiler</span>
         </div>
@@ -367,7 +367,7 @@ export function DorothyPage() {
       <section style={{ padding: "15vh 0", maxWidth: 720,
         margin: "0 auto", paddingLeft: "6vw", paddingRight: "6vw" }}>
 
-        <p className="data-reveal" style={{ fontFamily: "Playfair Display, serif",
+        <p className="data-reveal" style={{ fontFamily: "Playfair Display, Georgia, serif",
           fontSize: "clamp(1.1rem,2vw,1.5rem)", lineHeight: 1.85,
           color: "#c8bfa8", marginBottom: "8vh" }}>
           Dorothy Dandridge. 1922–1965.
@@ -375,18 +375,18 @@ export function DorothyPage() {
 
         {/* Donnée 1 */}
         <div className="data-reveal" style={{ marginBottom: "7vh" }}>
-          <span style={{ fontFamily: "DM Mono, monospace", fontSize: "clamp(2.5rem,6vw,4.5rem)",
+          <span style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(2.5rem,6vw,4.5rem)",
             fontWeight: 900, color: "#b8914a", display: "block", lineHeight: 1 }}>
             1954
           </span>
-          <p style={{ fontFamily: "Playfair Display, serif",
+          <p style={{ fontFamily: "Playfair Display, Georgia, serif",
             fontSize: "clamp(1rem,1.7vw,1.3rem)", lineHeight: 1.85,
             color: "#c8bfa8", marginTop: "1rem", maxWidth: 580 }}>
             Le Code Hays est encore en vigueur. Les relations romantiques interraciales
             sont interdites à l'écran. Tout rôle romantique central impliquant une actrice noire
             avec un acteur blanc est structurellement bloqué par la censure hollywoodienne.
           </p>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+          <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
             color: "#3d3830", marginTop: "0.75rem", letterSpacing: "0.1em" }}>
             Source : Motion Picture Production Code, 1930, révisé 1934. MPAA Archives.
           </p>
@@ -395,13 +395,13 @@ export function DorothyPage() {
         {/* Donnée 2 */}
         <div className="data-reveal" style={{ marginBottom: "7vh",
           paddingLeft: "1.5rem", borderLeft: "2px solid #2a2620" }}>
-          <p style={{ fontFamily: "Playfair Display, serif",
+          <p style={{ fontFamily: "Playfair Display, Georgia, serif",
             fontSize: "clamp(1rem,1.7vw,1.3rem)", lineHeight: 1.85, color: "#c8bfa8" }}>
             Brown v. Board of Education déclenche la déségrégation légale aux États-Unis.
             Hollywood ne suit pas. La même année, la nomination de Dandridge à l'Oscar
             est un événement isolé dans une industrie qui ne modifie pas ses structures de casting.
           </p>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+          <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
             color: "#3d3830", marginTop: "0.75rem", letterSpacing: "0.1em" }}>
             Source : Donald Bogle, Bright Boulevards, Bold Dreams, 2005.
           </p>
@@ -409,7 +409,7 @@ export function DorothyPage() {
 
         {/* Donnée 3 */}
         <div className="data-reveal" style={{ marginBottom: "7vh" }}>
-          <p style={{ fontFamily: "Playfair Display, serif",
+          <p style={{ fontFamily: "Playfair Display, Georgia, serif",
             fontSize: "clamp(1rem,1.7vw,1.3rem)", lineHeight: 1.85, color: "#7a7060",
             fontStyle: "italic" }}>
             Sur les productions hollywoodiennes à gros budget de cette décennie,
@@ -417,7 +417,7 @@ export function DorothyPage() {
             se comptent sur les doigts d'une main. Dandridge est l'exception qui confirme la règle —
             et cette exception a un prix.
           </p>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+          <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
             color: "#3d3830", marginTop: "0.75rem", letterSpacing: "0.1em" }}>
             Source : Carolyn M. West, Mammy, Jezebel, Sapphire and Their Homegirls, 2008.
           </p>
@@ -433,7 +433,7 @@ export function DorothyPage() {
             text="Je ne pouvais pas être la fille d'à côté. Ils ne savaient pas quoi faire de moi."
             accentColor="#b8914a"
           />
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 10,
+          <p style={{ fontFamily: "Syne, sans-serif", fontSize: 10,
             color: "#7a7060", letterSpacing: "0.2em", marginTop: "1.2rem" }}>
             — Dorothy Dandridge
           </p>
@@ -444,12 +444,12 @@ export function DorothyPage() {
 
             {/* Gauche — ce que Hollywood a fait d'elle */}
             <div className="col-left" style={{ opacity: 0 }}>
-              <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+              <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
                 color: "#b8914a", letterSpacing: "0.35em",
                 textTransform: "uppercase", marginBottom: "2rem" }}>
                 Ce que Hollywood a fait d'elle
               </p>
-              <p style={{ fontFamily: "Playfair Display, serif",
+              <p style={{ fontFamily: "Playfair Display, Georgia, serif",
                 fontSize: "clamp(0.9rem,1.5vw,1.1rem)", lineHeight: 1.85,
                 color: "#c8bfa8", marginBottom: "2rem" }}>
                 Première femme noire en couverture du magazine Life en 1954.
@@ -472,16 +472,16 @@ export function DorothyPage() {
                     padding: "0.9rem 0", display: "flex", justifyContent: "space-between",
                     alignItems: "baseline", gap: "1rem" }}>
                     <div>
-                      <span style={{ fontFamily: "Playfair Display, serif",
+                      <span style={{ fontFamily: "Playfair Display, Georgia, serif",
                         fontSize: "1rem", color: "#f0e8d5", fontStyle: "italic" }}>
                         {film.title}
                       </span>
-                      <span style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+                      <span style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
                         color: "#7a7060", display: "block", marginTop: "0.2rem" }}>
                         {film.role}
                       </span>
                     </div>
-                    <span style={{ fontFamily: "DM Mono, monospace", fontSize: 10,
+                    <span style={{ fontFamily: "Syne, sans-serif", fontSize: 10,
                       color: "#3d3830", flexShrink: 0 }}>{film.year}</span>
                   </div>
                 ))}
@@ -490,12 +490,12 @@ export function DorothyPage() {
 
             {/* Droite — ce qu'elle n'a jamais pu être */}
             <div className="col-right" style={{ opacity: 0 }}>
-              <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+              <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
                 color: "#7a7060", letterSpacing: "0.35em",
                 textTransform: "uppercase", marginBottom: "2rem" }}>
                 Ce qu'elle n'a jamais pu être
               </p>
-              <p style={{ fontFamily: "Playfair Display, serif",
+              <p style={{ fontFamily: "Playfair Display, Georgia, serif",
                 fontSize: "clamp(0.9rem,1.5vw,1.1rem)", lineHeight: 1.85,
                 color: "#7a7060", marginBottom: "2rem" }}>
                 Dandridge voulait jouer des femmes ordinaires — des rôles romantiques classiques,
@@ -503,13 +503,13 @@ export function DorothyPage() {
                 la 20th Century Fox montrent des refus répétés, systématiques, souvent justifiés
                 par la peur de la réaction du public blanc du Sud des États-Unis.
               </p>
-              <p style={{ fontFamily: "Playfair Display, serif",
+              <p style={{ fontFamily: "Playfair Display, Georgia, serif",
                 fontSize: "clamp(0.9rem,1.5vw,1.1rem)", lineHeight: 1.85,
                 color: "#4a4540", fontStyle: "italic" }}>
                 Elle n'a jamais joué une femme ordinaire dans une situation ordinaire.
                 Chaque rôle la plaçait dans une position d'exception, d'exotisme ou de tragédie.
               </p>
-              <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+              <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
                 color: "#3d3830", marginTop: "1.5rem", letterSpacing: "0.1em",
                 lineHeight: 1.7 }}>
                 Source : Earl Mills, Dorothy Dandridge: A Portrait in Black, 1970.<br />
@@ -526,11 +526,11 @@ export function DorothyPage() {
                 ].map((item, i) => (
                   <div key={i} style={{ borderBottom: "1px solid #1e1b16",
                     padding: "0.9rem 0" }}>
-                    <span style={{ fontFamily: "Playfair Display, serif",
+                    <span style={{ fontFamily: "Playfair Display, Georgia, serif",
                       fontSize: "1rem", color: "#3d3830", fontStyle: "italic" }}>
                       {item}
                     </span>
-                    <span style={{ fontFamily: "DM Mono, monospace", fontSize: 8,
+                    <span style={{ fontFamily: "Syne, sans-serif", fontSize: 8,
                       color: "#2a2620", display: "block", marginTop: "0.2rem" }}>
                       jamais obtenu
                     </span>
@@ -546,12 +546,12 @@ export function DorothyPage() {
       <section style={{ padding: "15vh 6vw" }}>
         <div style={{ maxWidth: 920, margin: "0 auto" }}>
 
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+          <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
             letterSpacing: "0.45em", textTransform: "uppercase",
             color: "#b8914a", marginBottom: "1rem" }}>
             La chute — 1954 à 1965
           </p>
-          <p style={{ fontFamily: "Playfair Display, serif",
+          <p style={{ fontFamily: "Playfair Display, Georgia, serif",
             fontSize: "clamp(1rem,1.8vw,1.4rem)", lineHeight: 1.85,
             color: "#7a7060", marginBottom: "4vh", fontStyle: "italic" }}>
             Le nombre de propositions de rôles reçues par Dandridge entre 1954 et 1965.
@@ -573,13 +573,13 @@ export function DorothyPage() {
                   : "2px solid transparent",
                 paddingLeft: "1.5rem",
               }}>
-                <span style={{ fontFamily: "DM Mono, monospace",
+                <span style={{ fontFamily: "Syne, sans-serif",
                   fontSize: ev.death ? 11 : 10,
                   color: ev.death ? "#8b0000" : ev.accent ? "#b8914a" : "#7a7060",
                   flexShrink: 0, width: 90, paddingTop: "0.2rem" }}>
                   {ev.year}
                 </span>
-                <p style={{ fontFamily: "Playfair Display, serif",
+                <p style={{ fontFamily: "Playfair Display, Georgia, serif",
                   fontSize: "clamp(0.95rem,1.6vw,1.2rem)", lineHeight: 1.7,
                   color: ev.death ? "#8b0000"
                     : ev.accent ? "#f0e8d5"
@@ -594,20 +594,20 @@ export function DorothyPage() {
             {/* Donnée seule après */}
             <div style={{ marginTop: "6vh", padding: "2.5rem",
               borderTop: "1px solid #1e1b16" }}>
-              <p style={{ fontFamily: "DM Mono, monospace", fontSize: 10,
+              <p style={{ fontFamily: "Syne, sans-serif", fontSize: 10,
                 color: "#7a7060", lineHeight: 1.9, letterSpacing: "0.05em" }}>
                 Entre 1960 et 1965, Dorothy Dandridge ne tourne aucun film hollywoodien majeur.
               </p>
-              <p style={{ fontFamily: "Playfair Display, serif",
+              <p style={{ fontFamily: "Playfair Display, Georgia, serif",
                 fontSize: "clamp(2.5rem,7vw,5rem)", fontWeight: 900,
                 color: "#1e1b16", lineHeight: 1, margin: "0.5rem 0" }}>
                 5 ans
               </p>
-              <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+              <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
                 color: "#3d3830", letterSpacing: "0.2em", textTransform: "uppercase" }}>
                 de silence · après la première nomination à l'Oscar
               </p>
-              <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+              <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
                 color: "#3d3830", marginTop: "0.75rem", letterSpacing: "0.1em" }}>
                 Source : Donald Bogle, Dorothy Dandridge: A Biography, 1997.
               </p>
@@ -621,7 +621,7 @@ export function DorothyPage() {
         borderTop: "1px solid #1e1b16" }}>
         <div style={{ maxWidth: 820, margin: "0 auto" }}>
 
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+          <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
             letterSpacing: "0.45em", textTransform: "uppercase",
             color: "#7a7060", marginBottom: "6vh" }}>
             La friction
@@ -629,12 +629,12 @@ export function DorothyPage() {
 
           {/* Voix 1 */}
           <div style={{ marginBottom: "6vh" }}>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+            <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
               letterSpacing: "0.3em", textTransform: "uppercase",
               color: "#b8914a", marginBottom: "1.5rem" }}>
               La réhabilitation posthume
             </p>
-            <p style={{ fontFamily: "Playfair Display, serif",
+            <p style={{ fontFamily: "Playfair Display, Georgia, serif",
               fontSize: "clamp(1rem,1.7vw,1.3rem)", lineHeight: 1.85,
               color: "#c8bfa8" }}>
               Après sa mort, Hollywood réhabilite Dorothy Dandridge. En 1999,
@@ -643,7 +643,7 @@ export function DorothyPage() {
               et remporte un Golden Globe. L'industrie qui n'a pas su quoi faire d'elle
               de son vivant écrit le récit de sa vie après sa mort.
             </p>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+            <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
               color: "#3d3830", marginTop: "0.75rem", letterSpacing: "0.1em",
               lineHeight: 1.7 }}>
               Source : Kimberlé Crenshaw, Mapping the Margins, 1991.<br />
@@ -654,22 +654,22 @@ export function DorothyPage() {
           {/* Donnée centrale */}
           <div style={{ padding: "3rem 0", borderTop: "1px solid #1e1b16",
             borderBottom: "1px solid #1e1b16", margin: "4vh 0", textAlign: "center" }}>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 10,
+            <p style={{ fontFamily: "Syne, sans-serif", fontSize: 10,
               color: "#7a7060", lineHeight: 1.9, marginBottom: "0.5rem" }}>
               Actrices noires en rôles romantiques centraux · productions majeures · 1955–1975
             </p>
-            <span style={{ fontFamily: "Playfair Display, serif",
+            <span style={{ fontFamily: "Playfair Display, Georgia, serif",
               fontSize: "clamp(4rem,12vw,9rem)", fontWeight: 900,
               color: "#1e1b16", display: "block", lineHeight: 1 }}>
               {"< 5"}
             </span>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+            <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
               color: "#3d3830", letterSpacing: "0.2em", textTransform: "uppercase",
               marginTop: "0.5rem" }}>
               La nomination de Dandridge n'a pas ouvert une porte.
               Elle a illuminé une impasse.
             </p>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+            <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
               color: "#3d3830", marginTop: "0.75rem", letterSpacing: "0.1em",
               lineHeight: 1.7 }}>
               Source : USC Annenberg Inclusion Initiative.<br />
@@ -679,12 +679,12 @@ export function DorothyPage() {
 
           {/* Voix 2 */}
           <div style={{ marginBottom: "6vh" }}>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+            <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
               letterSpacing: "0.3em", textTransform: "uppercase",
               color: "#7a7060", marginBottom: "1.5rem" }}>
               Ce que sa trajectoire dit sur les structures
             </p>
-            <p style={{ fontFamily: "Playfair Display, serif",
+            <p style={{ fontFamily: "Playfair Display, Georgia, serif",
               fontSize: "clamp(1rem,1.7vw,1.3rem)", lineHeight: 1.85,
               color: "#7a7060" }}>
               L'industrie hollywoodienne produit des figures d'exception — des premières fois —
@@ -692,7 +692,7 @@ export function DorothyPage() {
               Dandridge est la première nominée. Elle reste longtemps la seule.
               L'exception ne devient pas la règle.
             </p>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+            <p style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
               color: "#3d3830", marginTop: "0.75rem", letterSpacing: "0.1em" }}>
               Source : Melissa V. Harris-Perry, Sister Citizen, 2011.
             </p>
@@ -700,7 +700,7 @@ export function DorothyPage() {
 
           {/* Phrase de friction */}
           <div className="friction-phrase" style={{ opacity: 0, marginTop: "6vh" }}>
-            <p style={{ fontFamily: "Playfair Display, serif",
+            <p style={{ fontFamily: "Playfair Display, Georgia, serif",
               fontSize: "clamp(1.3rem,2.5vw,2rem)", fontStyle: "italic",
               color: "#8b0000", lineHeight: 1.4 }}>
               "L'industrie qui l'a détruite a écrit le récit de sa vie."
@@ -727,7 +727,7 @@ export function DorothyPage() {
         <div className="exit-wrap" style={{ opacity: 0, position: "relative",
           zIndex: 2, textAlign: "center", maxWidth: 720 }}>
 
-          <p style={{ fontFamily: "Playfair Display, serif",
+          <p style={{ fontFamily: "Playfair Display, Georgia, serif",
             fontSize: "clamp(1.5rem,3vw,2.5rem)", fontStyle: "italic",
             color: "#c8bfa8", lineHeight: 1.35, marginBottom: "8vh" }}>
             "Le système ne détruit pas celles qu'il ignore.
@@ -749,7 +749,7 @@ export function DorothyPage() {
                 sub: "Célébrée. Puis abandonnée. Le même mécanisme, soixante ans plus tard." },
             ].map(link => (
               <Link key={link.href} href={link.href} style={{
-                fontFamily: "Playfair Display, serif", fontSize: "1rem",
+                fontFamily: "Playfair Display, Georgia, serif", fontSize: "1rem",
                 color: "#7a7060", textDecoration: "none",
                 borderBottom: "1px solid #2a2620", paddingBottom: "0.2rem",
                 transition: "color 0.3s, border-color 0.3s",
@@ -767,7 +767,7 @@ export function DorothyPage() {
                 {link.label} · <span style={{ fontStyle: "italic", fontSize: "0.9rem" }}>{link.sub}</span> →
               </Link>
             ))}
-            <Link href="/" style={{ fontFamily: "DM Mono, monospace", fontSize: 9,
+            <Link href="/" style={{ fontFamily: "Syne, sans-serif", fontSize: 9,
               color: "#2a2620", textDecoration: "none", marginTop: "3rem",
               letterSpacing: "0.3em", textTransform: "uppercase",
               transition: "color 0.3s" }}

@@ -94,7 +94,7 @@ export function ViolaPage() {
                   <Pie data={filmoCats} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} stroke="none">
                     {filmoCats.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
                   </Pie>
-                  <Tooltip contentStyle={{ background: "#0e0c09", border: "1px solid #3d3830", fontFamily: "DM Mono", fontSize: 10, color: "#f0e8d5" }}
+                  <Tooltip contentStyle={{ background: "#0e0c09", border: "1px solid #3d3830", fontFamily: "Syne", fontSize: 10, color: "#f0e8d5" }}
                     formatter={(val: number) => [`${val}%`]} />
                 </PieChart>
               </ResponsiveContainer>
@@ -113,9 +113,9 @@ export function ViolaPage() {
             <p className="font-mono text-xs tracking-widest uppercase mb-4" style={{ color: "#b8914a" }}>Écart de rémunération — rôles équivalents · base 100</p>
             <ResponsiveContainer width="100%" height={160}>
               <BarChart data={payGapData} layout="vertical">
-                <XAxis type="number" tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "DM Mono" }} axisLine={{ stroke: "#3d3830" }} tickLine={false} />
-                <YAxis type="category" dataKey="name" tick={{ fill: "#c8bfa8", fontSize: 9, fontFamily: "DM Mono" }} axisLine={false} tickLine={false} width={180} />
-                <Tooltip contentStyle={{ background: "#0e0c09", border: "1px solid #3d3830", fontFamily: "DM Mono", fontSize: 10, color: "#f0e8d5" }} />
+                <XAxis type="number" tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "Syne" }} axisLine={{ stroke: "#3d3830" }} tickLine={false} />
+                <YAxis type="category" dataKey="name" tick={{ fill: "#c8bfa8", fontSize: 9, fontFamily: "Syne" }} axisLine={false} tickLine={false} width={180} />
+                <Tooltip contentStyle={{ background: "#0e0c09", border: "1px solid #3d3830", fontFamily: "Syne", fontSize: 10, color: "#f0e8d5" }} />
                 <Bar dataKey="value" radius={0}>
                   {payGapData.map((_, i) => <Cell key={i} fill={i === 2 ? "#8b2020" : i === 0 ? "#b8914a" : "#7a7060"} />)}
                 </Bar>

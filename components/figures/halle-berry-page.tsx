@@ -115,11 +115,11 @@ export function HalleBerryPage() {
             <p className="font-mono text-xs tracking-widest uppercase mb-4" style={{ color: "#b8914a" }}>Best Actress Oscar — femmes noires · 1929–2024</p>
             <ResponsiveContainer width="100%" height={180}>
               <LineChart data={oscarGapData}>
-                <XAxis dataKey="year" tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "DM Mono" }} axisLine={{ stroke: "#3d3830" }} tickLine={false} />
+                <XAxis dataKey="year" tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "Syne" }} axisLine={{ stroke: "#3d3830" }} tickLine={false} />
                 <YAxis hide />
-                <Tooltip contentStyle={{ background: "#0e0c09", border: "1px solid #3d3830", fontFamily: "DM Mono", fontSize: 10, color: "#f0e8d5" }}
+                <Tooltip contentStyle={{ background: "#0e0c09", border: "1px solid #3d3830", fontFamily: "Syne", fontSize: 10, color: "#f0e8d5" }}
                   formatter={(_: number, __: string, props: { payload?: { label?: string } }) => [props.payload?.label || "", ""]} />
-                <ReferenceLine x="2002" stroke="#b8914a" strokeWidth={2} label={{ value: "2002", fill: "#b8914a", fontSize: 9, fontFamily: "DM Mono" }} />
+                <ReferenceLine x="2002" stroke="#b8914a" strokeWidth={2} label={{ value: "2002", fill: "#b8914a", fontSize: 9, fontFamily: "Syne" }} />
                 <Line type="monotone" dataKey="wins" stroke="#b8914a" strokeWidth={2} dot={{ fill: "#b8914a", r: 5 }} activeDot={{ r: 8 }} />
               </LineChart>
             </ResponsiveContainer>
@@ -214,7 +214,7 @@ export function HalleBerryPage() {
             <ResponsiveContainer width="100%" height={240}>
               <RadarChart data={radarBefore}>
                 <PolarGrid stroke="#3d3830" />
-                <PolarAngleAxis dataKey="subject" tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "DM Mono" }} />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "Syne" }} />
                 <Radar name="Avant" dataKey="before" stroke="rgba(200,191,168,0.7)" fill="rgba(200,191,168,0.15)" strokeWidth={1.5} />
                 <Radar name="Après" dataKey="after" stroke="rgba(139,32,32,0.8)" fill="rgba(139,32,32,0.15)" strokeWidth={1.5} />
               </RadarChart>

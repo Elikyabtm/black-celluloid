@@ -11,8 +11,6 @@ gsap.registerPlugin(ScrollTrigger)
 // ════════════════════════════════════════════════════════════════
 // SYSTÈME DE GRILLE — 12 colonnes réelles, pas de width: 45% au hasard
 // ════════════════════════════════════════════════════════════════
-// Grille explicite — toujours en longhand, jamais de shorthand "padding"
-// mélangé avec paddingTop/paddingBottom (React s'en plaint sinon).
 function gridSection(paddingTop: string, paddingBottom: string): React.CSSProperties {
   return {
     display: "grid",
@@ -64,7 +62,6 @@ function PhotoHead({ role, size = 26, onClick }: {
   )
 }
 
-// ─── CITATION VOIX OFF ─────────────────────────────────────────
 function InlineQuote({ text, author, accentColor = "#d4a853" }: {
   text: string; author?: string; accentColor?: string
 }) {
@@ -95,12 +92,12 @@ function InlineQuote({ text, author, accentColor = "#d4a853" }: {
         display: "inline-flex", alignItems: "center", gap: 8,
         border: "none", background: "none", cursor: "pointer",
         padding: 0, marginBottom: "1rem",
-        color: playing ? accentColor : "#8a8276",
-        fontFamily: "DM Mono, monospace", fontSize: 12,
+        color: playing ? accentColor : "#a89e8e",
+        fontFamily: "Syne, sans-serif", fontSize: 13,
         letterSpacing: "0.15em", textTransform: "uppercase",
       }}>
         <span style={{ width: 28, height: 28, borderRadius: "50%",
-          border: `1px solid ${playing ? accentColor : "#4a4540"}`,
+          border: `1px solid ${playing ? accentColor : "#5c5448"}`,
           display: "flex", alignItems: "center", justifyContent: "center" }}>
           {playing ? "⏸" : "▶"}
         </span>
@@ -114,20 +111,19 @@ function InlineQuote({ text, author, accentColor = "#d4a853" }: {
           <span key={i} style={{
             display: "inline-block", marginRight: "0.3em",
             opacity: active ? 1 : 0.15,
-            color: active ? "#f0e8d5" : "#3d3830",
+            color: active ? "#f0e8d5" : "#5c5448",
             transition: `opacity 0.5s ${i * 0.04}s, color 0.5s ${i * 0.04}s`,
           }}>{word}</span>
         ))}
       </blockquote>
       {author && (
-        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12,
-          color: "#8a8276", letterSpacing: "0.15em", marginTop: "1.2rem" }}>— {author}</p>
+        <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13,
+          color: "#a89e8e", letterSpacing: "0.15em", marginTop: "1.2rem" }}>— {author}</p>
       )}
     </div>
   )
 }
 
-// ─── PHOTOGRAMME ───────────────────────────────────────────────
 function Photogram({ src, title, year, role, expanded, onToggle }: {
   src: string; title: string; year: string; role: string
   expanded: boolean; onToggle: () => void
@@ -152,39 +148,50 @@ function Photogram({ src, title, year, role, expanded, onToggle }: {
         <div style={{ textAlign: "left" }}>
           <p style={{ fontFamily: "Playfair Display, serif", fontStyle: "italic",
             fontSize: "1rem", color: "#f0e8d5" }}>{title}</p>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11,
+          <p style={{ fontFamily: "Syne, sans-serif", fontSize: 12,
             color: "#a89e8e", letterSpacing: "0.1em", marginTop: "0.2rem" }}>{role}</p>
         </div>
-        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11, color: "#8a8276" }}>{year}</p>
+        <p style={{ fontFamily: "Syne, sans-serif", fontSize: 12, color: "#a89e8e" }}>{year}</p>
       </div>
     </button>
   )
 }
 
-// ─── FAIT DIVERS ───────────────────────────────────────────────
 function FaitDivers({ date, lieu, source, children }: {
   date: string; lieu: string; source?: string; children: React.ReactNode
 }) {
   return (
     <div style={{ borderLeft: "3px solid #d4a853", paddingLeft: "1.8rem" }}>
-      <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12,
+      <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13,
         color: "#d4a853", letterSpacing: "0.15em", textTransform: "uppercase",
         marginBottom: "0.4rem" }}>{date}</p>
-      <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12,
-        color: "#8a8276", marginBottom: "1.2rem" }}>{lieu}</p>
+      <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13,
+        color: "#a89e8e", marginBottom: "1.2rem" }}>{lieu}</p>
       <div style={{ fontFamily: "Playfair Display, serif",
         fontSize: "clamp(1rem,1.6vw,1.2rem)", lineHeight: 1.85, color: "#d8cfc0" }}>
         {children}
       </div>
       {source && (
-        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11,
-          color: "#5c5448", marginTop: "1rem", lineHeight: 1.6 }}>Source : {source}</p>
+        <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13,
+          color: "#8a8276", marginTop: "1rem", lineHeight: 1.6 }}>Source : {source}</p>
       )}
     </div>
   )
 }
 
-// ─── TIMELINE OSCARS — interactive, cliquable, plus de jeu ──────
+function FootnoteBlock({ items }: { items: { mark: string; def: string }[] }) {
+  return (
+    <div style={{ borderTop: "1px solid #2a2620", paddingTop: "1.5rem" }}>
+      {items.map((it, i) => (
+        <p key={i} style={{ fontFamily: "Syne, sans-serif", fontSize: 13,
+          color: "#a89e8e", lineHeight: 1.7, marginBottom: i < items.length - 1 ? "0.6rem" : 0 }}>
+          <span style={{ color: "#d4a853" }}>{it.mark}</span> {it.def}
+        </p>
+      ))}
+    </div>
+  )
+}
+
 const BEATS = [
   { time: "19:00", text: "L'équipe de Gone with the Wind arrive à l'Ambassador Hotel.",
     sub: "Le film remportera 8 Oscars cette nuit-là.", accent: false, dim: true },
@@ -222,7 +229,6 @@ function OscarTimeline() {
     return () => { stRef.current?.kill() }
   }, [])
 
-  // Click sur un point = saute directement à ce beat
   const jumpTo = (i: number) => {
     if (!stRef.current || !outer.current) return
     const total = stRef.current.end - stRef.current.start
@@ -241,16 +247,15 @@ function OscarTimeline() {
       }}>
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, zIndex: 10,
           padding: "2rem 8vw", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12, color: "#d4a853",
+          <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13, color: "#d4a853",
             letterSpacing: "0.25em", textTransform: "uppercase" }}>
             27 février 1940 · Ambassador Hotel
           </p>
-          {/* Points cliquables — navigation directe */}
           <div style={{ display: "flex", gap: 10 }}>
             {BEATS.map((_, i) => (
               <button key={i} onClick={() => jumpTo(i)} style={{
                 width: i === active ? 24 : 8, height: 8, borderRadius: 4,
-                background: i === active ? "#d4a853" : "#3a352c",
+                background: i === active ? "#d4a853" : "#4a4540",
                 border: "none", padding: 0, cursor: "pointer",
                 transition: "all 0.4s ease",
               }} aria-label={`Aller au moment ${i + 1}`} />
@@ -266,20 +271,20 @@ function OscarTimeline() {
               alignItems: "flex-start", justifyContent: "center", padding: "8vh 8vw",
             }}>
               {b.time && (
-                <p style={{ fontFamily: "DM Mono, monospace", fontSize: "clamp(1rem,2vw,1.4rem)",
-                  color: "#8a8276", marginBottom: "3vh" }}>{b.time}</p>
+                <p style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(1rem,2vw,1.4rem)",
+                  color: "#a89e8e", marginBottom: "3vh" }}>{b.time}</p>
               )}
               <p style={{
                 fontFamily: "Playfair Display, serif",
                 fontSize: b.accent ? "clamp(2.5rem,6vw,5.5rem)" : "clamp(1.8rem,4vw,3.8rem)",
                 fontWeight: b.accent ? 900 : 400,
                 lineHeight: 1.15, whiteSpace: "pre-line",
-                color: b.accent ? "#f0e8d5" : b.dim ? "#6b6358" : "#d8cfc0",
+                color: b.accent ? "#f0e8d5" : b.dim ? "#8a8276" : "#d8cfc0",
                 maxWidth: b.accent ? "80vw" : "65vw",
               }}>{b.text}</p>
               {b.sub && (
-                <p style={{ fontFamily: "DM Mono, monospace", fontSize: "clamp(0.9rem,1.4vw,1.1rem)",
-                  color: "#8a8276", marginTop: "3vh", maxWidth: "45vw", lineHeight: 1.7 }}>{b.sub}</p>
+                <p style={{ fontFamily: "Syne, sans-serif", fontSize: "clamp(0.9rem,1.4vw,1.1rem)",
+                  color: "#a89e8e", marginTop: "3vh", maxWidth: "45vw", lineHeight: 1.7 }}>{b.sub}</p>
               )}
             </div>
           ))}
@@ -289,9 +294,6 @@ function OscarTimeline() {
   )
 }
 
-// ════════════════════════════════════════════════════════════════
-// PAGE
-// ════════════════════════════════════════════════════════════════
 export function HattiePage() {
   const container = useRef<HTMLDivElement>(null)
   const [headsVisible, setHeadsVisible] = useState(false)
@@ -343,7 +345,6 @@ export function HattiePage() {
   return (
     <div ref={container} style={{ background: "#0a0806", color: "#d8cfc0", fontFamily: "Syne, sans-serif" }}>
 
-      {/* ── §1 ENTRÉE ────────────────────────────────────────────── */}
       <section style={{ height: "100vh", position: "relative" }}>
         <div className="hero-img" style={{ position: "absolute", inset: 0, opacity: 0 }}>
           <Image src="/images/hattie-mcdaniel.jpg" alt="Hattie McDaniel, Gone with the Wind, 1939" fill
@@ -356,9 +357,9 @@ export function HattiePage() {
         </div>
 
         <p style={{ position: "absolute", top: "2.5rem", left: "8vw", zIndex: 3,
-          fontFamily: "DM Mono, monospace", fontSize: 12, color: "#a8895a",
+          fontFamily: "Syne, sans-serif", fontSize: 13, color: "#c9a86a",
           letterSpacing: "0.3em", textTransform: "uppercase" }}>
-          Figure I · 1895–1952
+          Hattie McDaniel · Figure I · 1895–1952
         </p>
 
         <div className="hero-phrase" style={{ position: "absolute", bottom: "12vh", left: "8vw",
@@ -368,25 +369,30 @@ export function HattiePage() {
             Elle a remporté l'Oscar
           </h1>
           <h1 style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(2.4rem,5vw,4.6rem)",
-            fontStyle: "italic", lineHeight: 1.12, color: "#a89e8e", margin: 0 }}>
+            fontStyle: "italic", lineHeight: 1.12, color: "#b8ab9a", margin: 0 }}>
             qu'elle n'avait pas le droit de célébrer.
           </h1>
         </div>
       </section>
 
-      {/* ── §2 LE SYSTÈME ────────────────────────────────────────── */}
       <section style={gridSection("14vh", "8vh")}>
         <p className="data-reveal" style={{ ...col(1, 6), fontFamily: "Playfair Display, serif",
           fontSize: "clamp(1.2rem,2vw,1.55rem)", lineHeight: 1.85, color: "#d8cfc0", marginBottom: "3vh" }}>
-          En 1930, le Code Hays entre en vigueur. Il ne dit pas que les actrices noires
+          En 1930, le Code Hays* entre en vigueur. Il ne dit pas que les actrices noires
           n'ont pas le droit d'exister dans les films. Il rend simplement impossible
           qu'elles y existent autrement que dans des rôles de service.
         </p>
         <p className="data-reveal" style={{ ...col(1, 5), fontFamily: "Playfair Display, serif",
-          fontSize: "clamp(1.1rem,1.9vw,1.4rem)", lineHeight: 1.85, color: "#8a8276",
-          fontStyle: "italic", marginBottom: "8vh" }}>
+          fontSize: "clamp(1.1rem,1.9vw,1.4rem)", lineHeight: 1.85, color: "#a89e8e",
+          fontStyle: "italic", marginBottom: "3vh" }}>
           Ce système précède Hattie McDaniel. C'est ce qui le rend difficile à combattre.
         </p>
+
+        <div className="data-reveal" style={{ ...col(1, 6), marginBottom: "8vh" }}>
+          <FootnoteBlock items={[
+            { mark: "*", def: "Code Hays : règlement d'autocensure adopté par l'industrie hollywoodienne en 1930, en vigueur jusqu'en 1968. Il encadrait strictement la représentation de la sexualité, de la violence et des relations raciales à l'écran." },
+          ]} />
+        </div>
 
         <div className="data-reveal" style={{ ...col(1, 3), borderTop: "1px solid #2a2620", paddingTop: "3vh" }}>
           <span style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(3rem,6vw,5rem)",
@@ -398,7 +404,7 @@ export function HattiePage() {
             lineHeight: 1.85, color: "#d8cfc0", marginBottom: "0.75rem" }}>
             Le Code Hays interdit les relations romantiques interraciales à l'écran.
           </p>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11, color: "#5c5448" }}>
+          <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13, color: "#8a8276" }}>
             Source : Motion Picture Production Code, 1930. MPAA Archives.
           </p>
         </div>
@@ -412,42 +418,40 @@ export function HattiePage() {
             fontWeight: 900, color: "#d4a853", display: "block", letterSpacing: "-0.02em" }}>
             {counter}
           </span>
-          <span style={{ fontFamily: "DM Mono, monospace", fontSize: 13, color: "#8a8276",
+          <span style={{ fontFamily: "Syne, sans-serif", fontSize: 14, color: "#a89e8e",
             letterSpacing: "0.25em", textTransform: "uppercase" }}>films</span>
         </div>
         <p className="data-reveal" style={{ ...col(1, 6), fontFamily: "Playfair Display, serif",
-          fontSize: "clamp(1.1rem,1.8vw,1.35rem)", lineHeight: 1.85, color: "#8a8276",
+          fontSize: "clamp(1.1rem,1.8vw,1.35rem)", lineHeight: 1.85, color: "#a89e8e",
           fontStyle: "italic", marginTop: "2vh", marginBottom: "0.5rem" }}>
           Dans 87% d'entre eux, elle jouait une domestique.
         </p>
-        <p style={{ ...col(1, 6), fontFamily: "DM Mono, monospace", fontSize: 11, color: "#5c5448" }}>
+        <p style={{ ...col(1, 6), fontFamily: "Syne, sans-serif", fontSize: 13, color: "#8a8276" }}>
           Source : IMDb, filmographie complète Hattie McDaniel. Black Film Archive.
         </p>
       </section>
 
-      {/* ── GRILLE DE 309 TÊTES — interactive ─────────────────────── */}
       <section style={{ padding: "8vh 8vw", background: "#0e0c09" }}>
-        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 13, color: "#d4a853",
+        <p style={{ fontFamily: "Syne, sans-serif", fontSize: 14, color: "#d4a853",
           letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "0.5rem" }}>
           309 films · cliquez sur un visage
         </p>
-        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12, color: "#5c5448", marginBottom: "1.5rem" }}>
+        <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13, color: "#a89e8e", marginBottom: "1.5rem" }}>
           Chaque visage représente un rôle qu'elle a tenu.
         </p>
 
-        <div className="heads-trigger" style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: "1.5rem" }}>
+        <div className="heads-trigger" style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: "1.5rem" }}>
           {ROLES.map((role, i) => (
             <div key={i} style={{
               opacity: headsVisible ? 1 : 0,
               transform: headsVisible ? "scale(1)" : "scale(0.7)",
               transition: `opacity 0.3s ${(i * 4) % 500}ms, transform 0.3s ${(i * 4) % 500}ms`,
             }}>
-              <PhotoHead role={role} size={26} onClick={() => setSelectedHead({ role, idx: i })} />
+              <PhotoHead role={role} size={42} onClick={() => setSelectedHead({ role, idx: i })} />
             </div>
           ))}
         </div>
 
-        {/* Panneau de détail au clic — vraie interaction, pas un tooltip hover */}
         {selectedHead && (
           <div style={{
             display: "flex", alignItems: "center", gap: "1.5rem",
@@ -461,27 +465,26 @@ export function HattiePage() {
             <div>
               <p style={{ fontFamily: "Playfair Display, serif", fontStyle: "italic",
                 fontSize: "1.1rem", color: "#f0e8d5" }}>{roleLabel(selectedHead.role)}</p>
-              <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12, color: "#8a8276", marginTop: "0.2rem" }}>
+              <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13, color: "#a89e8e", marginTop: "0.2rem" }}>
                 {roleFilm(selectedHead.role)} · rôle {selectedHead.idx + 1} sur 309
               </p>
             </div>
             <button onClick={() => setSelectedHead(null)} style={{
               marginLeft: "auto", background: "none", border: "none",
-              color: "#5c5448", cursor: "pointer", fontSize: 18, padding: "0.3rem",
+              color: "#a89e8e", cursor: "pointer", fontSize: 18, padding: "0.3rem",
             }}>×</button>
           </div>
         )}
 
-        <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12, color: "#8a8276", marginTop: "1.5rem" }}>
+        <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13, color: "#a89e8e", marginTop: "1.5rem" }}>
           Aucun rôle principal. Aucun personnage libre. Toutes des servantes.
         </p>
       </section>
 
-      {/* ── SUITE §2 — Donnée 2 + fait divers ────────────────────── */}
       <section style={gridSection("10vh", "10vh")}>
         <div className="data-reveal" style={{ ...col(1, 3), borderTop: "1px solid #2a2620", paddingTop: "3vh" }}>
           <span style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(3rem,6vw,5rem)",
-            fontWeight: 900, color: "#5c5448", lineHeight: 1 }}>1940</span>
+            fontWeight: 900, color: "#8a8276", lineHeight: 1 }}>1940</span>
         </div>
         <div className="data-reveal" style={{ ...col(4, 7), borderTop: "1px solid #2a2620",
           paddingTop: "3vh", marginBottom: "8vh" }}>
@@ -491,7 +494,7 @@ export function HattiePage() {
             n'est autorisée à y entrer que grâce à une intervention personnelle du producteur
             David O. Selznick.
           </p>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11, color: "#5c5448" }}>
+          <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13, color: "#8a8276" }}>
             Source : Donald Bogle, Bright Boulevards, Bold Dreams, 2005.
           </p>
         </div>
@@ -507,22 +510,29 @@ export function HattiePage() {
         </div>
       </section>
 
-      {/* ── §3 LE CHOIX IMPOSSIBLE — photogrammes cliquables ─────── */}
       <section style={{ padding: "10vh 8vw", background: "#060504", borderTop: "1px solid #1a1710" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: "1.5rem", marginBottom: "6vh" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: "1.5rem", marginBottom: "3vh" }}>
           <div style={{ gridColumn: "1 / span 7" }}>
             <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(1.1rem,1.8vw,1.35rem)",
               lineHeight: 1.85, color: "#d8cfc0", marginBottom: "3vh" }}>
-              Face aux critiques de la NAACP qui l'accusait de trahir sa communauté,
+              Face aux critiques de la NAACP* qui l'accusait de trahir sa communauté,
               Hattie McDaniel avait une réponse.
             </p>
             <InlineQuote text="Je préfère jouer une femme de chambre que l'être." author="Hattie McDaniel" />
           </div>
         </div>
 
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: "1.5rem", marginBottom: "6vh" }}>
+          <div style={{ gridColumn: "1 / span 7" }}>
+            <FootnoteBlock items={[
+              { mark: "*", def: "NAACP : National Association for the Advancement of Colored People, fondée en 1909. La plus ancienne organisation de défense des droits civiques afro-américains aux États-Unis." },
+            ]} />
+          </div>
+        </div>
+
         <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: "1.5rem" }}>
           <div className="col-left" style={{ gridColumn: "1 / span 6", opacity: 0 }}>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12, color: "#d4a853",
+            <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13, color: "#d4a853",
               letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "1.5rem" }}>
               Ce que l'industrie lui proposait — cliquez pour agrandir
             </p>
@@ -542,26 +552,26 @@ export function HattiePage() {
           </div>
 
           <div className="col-right" style={{ ...col(8, 5), opacity: 0 }}>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 12, color: "#5c5448",
+            <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13, color: "#8a8276",
               letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "1.5rem" }}>
               Ce qu'elle n'a jamais obtenu
             </p>
             <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(1rem,1.6vw,1.2rem)",
-              lineHeight: 1.85, color: "#8a8276", marginBottom: "1.5rem" }}>
+              lineHeight: 1.85, color: "#a89e8e", marginBottom: "1.5rem" }}>
               Des rôles dramatiques complexes. Des femmes avec une vie intérieure.
               Des personnages qui ne sont pas définis par leur relation de service
               à des personnages blancs.
             </p>
             <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(1rem,1.6vw,1.2rem)",
-              lineHeight: 1.85, color: "#6b6358", fontStyle: "italic", marginBottom: "1.5rem" }}>
+              lineHeight: 1.85, color: "#8a8276", fontStyle: "italic", marginBottom: "1.5rem" }}>
               Les archives de sa correspondance montrent des demandes répétées.
               Des refus systématiques.
             </p>
-            <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11, color: "#5c5448", lineHeight: 1.6 }}>
+            <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13, color: "#8a8276", lineHeight: 1.6 }}>
               Source : Jill Watts, Hattie McDaniel: Black Ambition, White Hollywood, 2005.
             </p>
             <div style={{ marginTop: "2rem", padding: "2rem", border: "1px dashed #2a2620",
-              fontFamily: "DM Mono, monospace", fontSize: 11, color: "#3a352c",
+              fontFamily: "Syne, sans-serif", fontSize: 12, color: "#5c5448",
               textTransform: "uppercase", letterSpacing: "0.2em" }}>
               espace volontairement vide
             </div>
@@ -569,12 +579,16 @@ export function HattiePage() {
         </div>
       </section>
 
-      {/* ── VIDÉO — déplacée AVANT la timeline ───────────────────── */}
-      <section style={gridSection("12vh", "12vh")}>
+      <section style={gridSection("12vh", "6vh")}>
+        <p style={{ ...col(1, 8), fontFamily: "Syne, sans-serif", fontSize: 14, color: "#d4a853",
+          letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "2vh" }}>
+          27 février 1940 — la nuit des Oscars
+        </p>
         <p style={{ ...col(1, 7), fontFamily: "Playfair Display, serif",
           fontSize: "clamp(1.1rem,1.8vw,1.35rem)", lineHeight: 1.85, color: "#d8cfc0", marginBottom: "4vh" }}>
-          Ce soir-là, Hattie McDaniel prononce un discours.
-          Le studio l'a réécrit. Elle le sait. Elle le lit quand même.
+          Ce soir-là, Hattie McDaniel prononce un discours après avoir reçu son Oscar.
+          Le studio l'a réécrit. Elle le sait. Elle le lit quand même. Voici comment
+          cette nuit s'est déroulée, minute par minute.
         </p>
         <div style={{ ...col(1, 12), position: "relative", paddingBottom: "47%",
           background: "#0e0c09", border: "1px solid #1a1710", marginBottom: "1rem" }}>
@@ -582,17 +596,16 @@ export function HattiePage() {
             src="https://www.youtube.com/embed/e7t4pTNZshA?rel=0&modestbranding=1&color=white"
             title="Hattie McDaniel — Academy Award 1940" allowFullScreen loading="lazy" />
         </div>
-        <p style={{ ...col(1, 8), fontFamily: "DM Mono, monospace", fontSize: 11, color: "#5c5448" }}>
+        <p style={{ ...col(1, 8), fontFamily: "Syne, sans-serif", fontSize: 13, color: "#8a8276" }}>
           Extrait documentaire · Hattie McDaniel · Academy Award 1940
         </p>
       </section>
 
-      {/* ── §4 LA NUIT DES OSCARS — après la vidéo ───────────────── */}
       <OscarTimeline />
 
       <section style={gridSection("8vh", "8vh")}>
         <p style={{ ...col(1, 6), fontFamily: "Playfair Display, serif", fontSize: "clamp(1rem,1.7vw,1.3rem)",
-          lineHeight: 1.85, color: "#8a8276", fontStyle: "italic", marginBottom: "4vh" }}>
+          lineHeight: 1.85, color: "#a89e8e", fontStyle: "italic", marginBottom: "4vh" }}>
           Après cette nuit, rien ne change.
         </p>
         <div style={{ ...col(6, 7) }}>
@@ -606,7 +619,6 @@ export function HattiePage() {
         </div>
       </section>
 
-      {/* ── §5 LA FRICTION ───────────────────────────────────────── */}
       <section style={{ ...gridSection("12vh", "12vh"), background: "#0e0c09", borderTop: "1px solid #1a1710" }}>
         <p style={{ ...col(1, 6), fontFamily: "Playfair Display, serif", fontSize: "clamp(1.1rem,1.8vw,1.35rem)",
           lineHeight: 1.85, color: "#d8cfc0", marginBottom: "8vh" }}>
@@ -615,15 +627,15 @@ export function HattiePage() {
 
         <div className="friction-zero" style={{ ...col(1, 9), opacity: 0 }}>
           <span style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(9rem,22vw,18rem)",
-            fontWeight: 900, color: "#b03a3a", display: "block", lineHeight: 0.85, letterSpacing: "-0.03em" }}>0</span>
+            fontWeight: 900, color: "#c14545", display: "block", lineHeight: 0.85, letterSpacing: "-0.03em" }}>0</span>
         </div>
 
         <div style={{ ...col(1, 5), marginBottom: "8vh" }}>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 13, color: "#c97a7a",
+          <p style={{ fontFamily: "Syne, sans-serif", fontSize: 14, color: "#d99a9a",
             letterSpacing: "0.1em", lineHeight: 1.7, marginBottom: "0.75rem" }}>
             nouveaux types de rôles disponibles pour les actrices noires après son Oscar
           </p>
-          <p style={{ fontFamily: "DM Mono, monospace", fontSize: 11, color: "#5c5448" }}>
+          <p style={{ fontFamily: "Syne, sans-serif", fontSize: 13, color: "#8a8276" }}>
             Source : Donald Bogle, Toms, Coons, Mulattoes, Mammies, and Bucks, 1973.
           </p>
         </div>
@@ -636,12 +648,12 @@ export function HattiePage() {
 
         <div style={{ ...col(1, 6), borderTop: "1px solid #2a2620", paddingTop: "5vh", marginBottom: "8vh" }}>
           <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(1rem,1.6vw,1.2rem)",
-            lineHeight: 1.85, color: "#8a8276", marginBottom: "2vh" }}>
+            lineHeight: 1.85, color: "#a89e8e", marginBottom: "2vh" }}>
             Elle meurt en 1952. Elle avait demandé à être enterrée au Hollywood Cemetery.
             Le cimetière refusait les Noirs. Sa demande est rejetée.
           </p>
           <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(1rem,1.6vw,1.2rem)",
-            lineHeight: 1.85, color: "#6b6358", fontStyle: "italic" }}>
+            lineHeight: 1.85, color: "#8a8276", fontStyle: "italic" }}>
             En 1999, le Hollywood Forever Cemetery lui accorde une sépulture commémorative.
             Cinquante ans après.
           </p>
@@ -649,13 +661,12 @@ export function HattiePage() {
 
         <div className="friction-phrase" style={{ ...col(1, 12), opacity: 0 }}>
           <p style={{ fontFamily: "Playfair Display, serif", fontSize: "clamp(2rem,3.8vw,3.2rem)",
-            fontStyle: "italic", color: "#c97a7a", lineHeight: 1.3 }}>
+            fontStyle: "italic", color: "#d99a9a", lineHeight: 1.3 }}>
             "L'industrie l'a récompensée pour avoir joué<br />un rôle qui niait son humanité."
           </p>
         </div>
       </section>
 
-      {/* ── §6 LA SORTIE ─────────────────────────────────────────── */}
       <section style={{ minHeight: "100vh", position: "relative",
         display: "flex", flexDirection: "column", justifyContent: "flex-end",
         padding: "0 8vw 12vh" }}>
@@ -682,13 +693,13 @@ export function HattiePage() {
               sub: "Soixante ans plus tard. Une autre première fois. Une autre impasse." },
           ].map(link => (
             <Link key={link.href} href={link.href} style={{
-              fontFamily: "Playfair Display, serif", fontSize: "1.1rem", color: "#8a8276",
+              fontFamily: "Playfair Display, serif", fontSize: "1.1rem", color: "#a89e8e",
               textDecoration: "none", textAlign: "right",
               borderBottom: "1px solid #2a2620", paddingBottom: "0.2rem",
               transition: "color 0.3s, border-color 0.3s",
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "#d4a853"; (e.currentTarget as HTMLElement).style.borderColor = "#d4a853" }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "#8a8276"; (e.currentTarget as HTMLElement).style.borderColor = "#2a2620" }}>
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "#a89e8e"; (e.currentTarget as HTMLElement).style.borderColor = "#2a2620" }}>
               {link.label} · <span style={{ fontStyle: "italic", fontSize: "1rem" }}>{link.sub}</span> →
             </Link>
           ))}

@@ -48,13 +48,13 @@ export function BackToHub() {
         <path d="M19 12H5M12 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       <span style={{
-        fontFamily: "DM Mono, monospace",
+        fontFamily: "Syne, sans-serif",
         fontSize: 10,
         letterSpacing: "0.2em",
         textTransform: "uppercase",
         color: "#c8bfa8",
       }}>
-        Archive
+        Celluloid
       </span>
     </Link>
   )

@@ -189,9 +189,9 @@ export function HalleBaileyPage() {
             <p className="font-mono text-xs tracking-widest uppercase mb-6" style={{ color: "#b8914a" }}>Distribution des rôles — actrices noires à peau foncée · $50M+ budget</p>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={fantasyData} layout="vertical">
-                <XAxis type="number" tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "DM Mono" }} axisLine={{ stroke: "#3d3830" }} tickLine={false} unit="%" />
-                <YAxis type="category" dataKey="name" tick={{ fill: "#c8bfa8", fontSize: 9, fontFamily: "DM Mono" }} axisLine={false} tickLine={false} width={140} />
-                <Tooltip contentStyle={{ background: "#0e0c09", border: "1px solid #3d3830", fontFamily: "DM Mono", fontSize: 10, color: "#f0e8d5" }}
+                <XAxis type="number" tick={{ fill: "#7a7060", fontSize: 9, fontFamily: "Syne" }} axisLine={{ stroke: "#3d3830" }} tickLine={false} unit="%" />
+                <YAxis type="category" dataKey="name" tick={{ fill: "#c8bfa8", fontSize: 9, fontFamily: "Syne" }} axisLine={false} tickLine={false} width={140} />
+                <Tooltip contentStyle={{ background: "#0e0c09", border: "1px solid #3d3830", fontFamily: "Syne", fontSize: 10, color: "#f0e8d5" }}
                   formatter={(val: number) => [`${val}%`]} />
                 <Bar dataKey="value" radius={0}>
                   {fantasyData.map((entry, i) => <Cell key={i} fill={entry.fill} />)}
